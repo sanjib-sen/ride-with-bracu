@@ -1,57 +1,26 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js 13!</a>
-        </h1>
+export default function Page() {
+  const { data: session } = useSession();
+  const router = useRouter();
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://beta.nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js 13</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
+  if (!session) {
+    return (
+      <>
+        <div className=" columns-1 md:columns-2">
+          <p className="text-5xl text-stone-100">Ride Share With BRACU</p>
+          <button
+            className="inline-block px-3 py-2.5 bg-blue-600 rounded-md text-zinc-50"
+            onClick={() => signIn("google")}
           >
-            <h2>Examples &rarr;</h2>
-            <p>Explore the Next.js 13 playground.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates/next.js/app-directory?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
+            Sign in with your BRACU G-Suite Account
+          </button>
         </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
-  )
+      </>
+    );
+  } else {
+    router.push("/home");
+  }
 }
