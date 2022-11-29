@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model LocationModel {
+  id                 Int                      @id @default(autoincrement())
+  name               String?
+  userLocationStates UserLocationStateModel[]
+  users              UserModel[]
+}
+
+model UserLocationStateModel {
+  id         Int           @id @default(autoincrement())
+  location   LocationModel @relation(fields: [locationId], references: [id])
+  locationId Int
+  users      UserModel[]
+  fromBRACU  Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+}
+
+model UserModel {
+  id                  Int                     @id @default(autoincrement())
+  email               String                  @unique
+  name                String
+  image               String?
+  facebook            String?
+  whatsapp            String?
+  userLocationState   UserLocationStateModel? @relation(fields: [userLocationStateId], references: [id])
+  userLocationStateId Int?
+  defaultLocation     LocationModel?          @relation(fields: [defaultLocationId], references: [id])
+  defaultLocationId   Int?
+}

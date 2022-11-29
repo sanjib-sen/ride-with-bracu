@@ -1,18 +1,18 @@
 import { unstable_getServerSession } from "next-auth/next";
 import { SignIn } from "../components/SignIn";
 import { SignOut } from "../components/SignOut";
-import { createLocationData } from "../controllers/location";
+import { createUserModel } from "../controllers/location";
+import { userData } from "../types/userData";
 
 export default async function Page() {
   const session = await unstable_getServerSession();
   if (session && session.user && session.user.email && session.user.name) {
-    const sessionData = {
+    const sessionData: userData = {
       name: session.user.name,
       email: session.user.email,
       image: session.user.image,
     };
-    console.log(sessionData);
-    await createLocationData("Shyamoli", sessionData);
+    await createUserModel(sessionData);
   }
 
   if (!session) {
