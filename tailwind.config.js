@@ -7,6 +7,19 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    screens: {
+      'xs': '533px',
+      // => @media (min-width: 533px) { ... }
+
+      'sm': '640px',
+      // => @media (min-width: 640px) { ... }
+
+      'md': '720px',
+      // => @media (min-width: 1024px) { ... }
+
+      'lg': '1024px',
+      // => @media (min-width: 1280px) { ... }
+    },
   },
-  plugins: [],
-}
+  plugins: [require("@tailwindcss/forms")],
+};

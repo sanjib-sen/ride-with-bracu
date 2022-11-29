@@ -1,6 +1,6 @@
 import { unstable_getServerSession } from "next-auth/next";
 import { SignIn } from "../components/SignIn";
-import { SignOut } from "../components/SignOut";
+import { Profile } from "../components/Profile";
 import { createUserModel } from "../controllers/location";
 import { userData } from "../types/userData";
 
@@ -12,12 +12,12 @@ export default async function Page() {
       email: session.user.email,
       image: session.user.image,
     };
-    await createUserModel(sessionData);
+    // await createUserModel(sessionData);
   }
 
   if (!session) {
-    return <SignIn />;
+    return <Profile />;
   } else {
-    return <SignOut />;
+    return <Profile />;
   }
 }

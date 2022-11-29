@@ -8,9 +8,9 @@ export const SignIn = () => {
         <p className="text-3xl text-stone-100 px-10 text-center">
           Sign in with your BRACU G-Suite
         </p>
-        <div className="flex justify-center items-center justify-items-stretch justify-self-stretch">
+        <div className="flex justify-center items-center">
           <button
-            className="py-2 px-20 bg-blue-600 rounded-md text-zinc-50 text-md justify-self-stretch"
+            className="py-2 px-20 bg-blue-600 rounded-md text-zinc-50"
             onClick={() => {
               signIn("google");
             }}

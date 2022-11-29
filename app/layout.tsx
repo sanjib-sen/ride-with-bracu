@@ -11,7 +11,7 @@ export default function RootLayout({
       <html lang="en">
         <head />
         <body>
-          <div className="flex bg-zinc-700 h-screen items-center justify-center">
+          <div className="flex bg-zinc-700 h-full xs:h-screen items-center justify-center">
             {children}
           </div>
         </body>
