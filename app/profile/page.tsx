@@ -14,6 +14,10 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
   const router = useRouter();
 
+  //   if (!session) {
+  //     router.push("/");
+  //   }
+
   (async () => {
     if (session && saved === false) {
       const res = await fetch(`api/profile/${session?.user?.email}`, {
@@ -57,7 +61,7 @@ export default function Profile() {
         defaultLocationName: location,
       };
       (async () => {
-        const res = await fetch("api/create", {
+        const res = await fetch("api/profile/create", {
           method: "POST",
           body: JSON.stringify(profile),
           headers: { "Content-Type": "application/json" },

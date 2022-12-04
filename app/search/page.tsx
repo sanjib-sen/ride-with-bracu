@@ -10,6 +10,9 @@ export default function Search() {
   const [riders, setRiders] = useState<any[]>([]);
   const [saved, setSaved] = useState(false);
   const router = useRouter();
+  // if (!session) {
+  //   router.push("/");
+  // }
   function onEndSearch() {
     const profile = {
       currentLocationName: null,

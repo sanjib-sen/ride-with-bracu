@@ -12,6 +12,10 @@ export default function Search() {
   const [fromBRACU, setFromBRACU] = useState(true);
   const router = useRouter();
 
+  if (!session) {
+    router.push("/");
+  }
+
   (async () => {
     if (session && saved === false) {
       const res = await fetch(`api/profile/${session?.user?.email}`, {
@@ -29,20 +33,12 @@ export default function Search() {
 
   function handleLocationChange(event: any) {
     const selectedValue = event.target.value;
-    // setLocation({
-    //   name: selectedValue,
-    //   value: selectedValue.replaceAll(" ", "-").toLowerCase(),
-    // });
     setLocation(selectedValue);
     console.log(selectedValue, location);
   }
 
   function handleFromBRACUChange(event: any) {
     const selectedValue = event.target.value === "fromBracu";
-    // setLocation({
-    //   name: selectedValue,
-    //   value: selectedValue.replaceAll(" ", "-").toLowerCase(),
-    // });
     setFromBRACU(selectedValue);
     console.log(selectedValue, fromBRACU);
   }
