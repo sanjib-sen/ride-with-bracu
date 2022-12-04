@@ -1,6 +1,6 @@
 import { unstable_getServerSession } from "next-auth/next";
 import { SignIn } from "../components/SignIn";
-import { Profile } from "../components/Profile";
+import { Profile } from "./Profile";
 import { createUserModel } from "../controllers/location";
 import { userData } from "../types/userData";
 
