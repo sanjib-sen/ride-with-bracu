@@ -18,7 +18,7 @@ export default async function handler(
   await getUser(data as string)
     .then(async (user) => {
       await prisma.$disconnect();
-      res.status(200).json({ user });
+      res.status(200).json(user);
     })
     .catch(async (e) => {
       console.error(e);

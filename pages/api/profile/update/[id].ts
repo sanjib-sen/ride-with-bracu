@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+import { UserModel } from "@prisma/client";
 const prisma = new PrismaClient();
-async function updateUser(email: string, data: object) {
+async function updateUser(email: string, data: UserModel) {
   const user = await prisma.userModel.update({
     where: {
       email: email,
@@ -20,7 +21,7 @@ export default async function handler(
   await updateUser(email as string, data)
     .then(async (user) => {
       await prisma.$disconnect();
-      res.status(200).json({ user });
+      res.status(200).json(user);
     })
     .catch(async (e) => {
       console.error(e);

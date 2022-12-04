@@ -16,9 +16,9 @@ export default async function handler(
 ) {
   const frombracu = req.query.frombracu;
   await getRiders(frombracu === "true")
-    .then(async (results) => {
-      res.status(200).json(results);
+    .then(async (users) => {
       await prisma.$disconnect();
+      res.status(200).json(users);
     })
     .catch(async (e) => {
       console.error(e);

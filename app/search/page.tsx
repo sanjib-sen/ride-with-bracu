@@ -36,8 +36,8 @@ export default function Search() {
         method: "GET",
       });
       const data = await res.json();
-      if (data.user) {
-        const res = await fetch(`api/riders/${data.user.fromBRACU}`, {
+      if (data) {
+        const res = await fetch(`api/riders/${data.fromBRACU}`, {
           method: "GET",
         });
         const usersList = await res.json();

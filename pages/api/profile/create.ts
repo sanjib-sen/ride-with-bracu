@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-import { userData } from "../../../types/userData";
 const prisma = new PrismaClient();
+import { UserModel } from "@prisma/client";
 
-async function createUser(userData: userData) {
+async function createUser(userData: UserModel) {
   await prisma.userModel.create({
     data: userData,
   });
@@ -14,13 +14,13 @@ export default async function handler(
 ) {
   const data = req.body;
   await createUser(data)
-    .then(async () => {
+    .then(async (user) => {
       await prisma.$disconnect();
+      res.status(200).json(user);
     })
     .catch(async (e) => {
       console.error(e);
       await prisma.$disconnect();
       process.exit(1);
     });
-  res.status(200).json({ success: true, message: "User Creation Succesfull." });
 }

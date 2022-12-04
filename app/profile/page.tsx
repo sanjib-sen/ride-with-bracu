@@ -24,10 +24,10 @@ export default function Profile() {
         method: "GET",
       });
       const data = await res.json();
-      if (data.user) {
-        setFacebook(data.user.facebook);
-        setWhatsapp(data.user.whatsapp);
-        setLocation(data.user.defaultLocationName);
+      if (data) {
+        setFacebook(data.facebook);
+        setWhatsapp(data.whatsapp);
+        setLocation(data.defaultLocationName);
         setSaved(true);
       }
     }

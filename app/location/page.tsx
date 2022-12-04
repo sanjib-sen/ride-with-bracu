@@ -22,8 +22,8 @@ export default function Search() {
         method: "GET",
       });
       const data = await res.json();
-      if (data.user) {
-        setLocation(data.user.defaultLocationName);
+      if (data) {
+        setLocation(data.defaultLocationName);
         setSaved(true);
       } else {
         return router.push("/profile");
