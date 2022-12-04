@@ -1,7 +1,24 @@
 "use client";
 import { signIn } from "next-auth/react";
-
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { useRouter } from "next/router";
 export const SignIn = () => {
+  const { data: session } = useSession();
+
+  const [saved, setSaved] = useState(false);
+
+  (async () => {
+    if (session && saved === false) {
+      const res = await fetch(`api/profile/${session?.user?.email}`, {
+        method: "GET",
+      });
+      const data = await res.json();
+      if (data) {
+        setSaved(true);
+      }
+    }
+  })();
   return (
     <>
       <div className="grid md:grid-cols-2 gap-5 md:divide-x">

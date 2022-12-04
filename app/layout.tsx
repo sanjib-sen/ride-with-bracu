@@ -1,5 +1,6 @@
 import "./globals.css";
 import AuthContext from "./AuthContext";
+import Nav from "../components/NavBar";
 
 export default function RootLayout({
   children,
@@ -11,8 +12,9 @@ export default function RootLayout({
       <html lang="en">
         <head />
         <body>
-          <div className="flex bg-zinc-700 h-full xs:h-screen items-center justify-center">
-            {children}
+          <div className="grid h-screen bg-zinc-700">
+            <Nav />
+            <div className="items-center justify-center">{children}</div>
           </div>
         </body>
       </html>
