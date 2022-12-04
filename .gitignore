@@ -26,7 +26,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
-*.env*
+*.env
+.env.local
 
 # vercel
 .vercel
@@ -37,7 +38,7 @@ next-env.d.ts
 
 #prisma
 /prisma/migrations/*
-/prisma/dev.db
+/prisma/dev.*
 
 #package-lock
 package-lock.json
