@@ -14,9 +14,9 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
   const router = useRouter();
 
-  //   if (!session) {
-  //     router.push("/");
-  //   }
+  if (!session) {
+    router.push("/");
+  }
 
   (async () => {
     if (session && saved === false) {
@@ -103,7 +103,7 @@ export default function Profile() {
           <p className="text-2xl md:text-4xl text-stone-100">
             {saved
               ? "😶‍🌫️ " + session?.user?.name + "'s Profile"
-              : "😶‍🌫️ Let{`'`}s Set up your Profile"}
+              : "😶‍🌫️ Let's Set up your Profile"}
           </p>
           <p className="text-md md:text-xl text-stone-100 text-justify">
             Add your Default Location, Whatsapp Call Link (Recommended but

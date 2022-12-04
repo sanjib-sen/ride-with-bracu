@@ -10,21 +10,19 @@ export default function Search() {
   const [riders, setRiders] = useState<any[]>([]);
   const [saved, setSaved] = useState(false);
   const router = useRouter();
-  // if (!session) {
-  //   router.push("/");
-  // }
+  if (!session) {
+    router.push("/");
+  }
   function onEndSearch() {
     const profile = {
       currentLocationName: null,
       fromBRACU: null,
     };
     (async () => {
-      const res = await fetch(`api/profile/update/${session?.user?.email}`, {
+      await fetch(`api/profile/update/${session?.user?.email}`, {
         method: "POST",
         body: JSON.stringify(profile),
         headers: { "Content-Type": "application/json" },
-      }).then(async (res) => {
-        console.log(await res.json());
       });
     })();
     router.push("/location");
@@ -36,13 +34,16 @@ export default function Search() {
         method: "GET",
       });
       const data = await res.json();
-      if (data) {
+      if (data.fromBRACU && data.currentLocationName) {
         const res = await fetch(`api/riders/${data.fromBRACU}`, {
           method: "GET",
         });
         const usersList = await res.json();
         setRiders(usersList);
         setSaved(true);
+      } else {
+        setSaved(true);
+        router.push("/location");
       }
     }
   })();
