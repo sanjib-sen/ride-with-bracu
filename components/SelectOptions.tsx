@@ -23,9 +23,12 @@ selectOptions.sort(function (a, b) {
   return x < y ? -1 : x > y ? 1 : 0;
 });
 
-export const SelectOptions = ({ onChangeFunction }: any) => {
+export const SelectOptions = ({ onChangeFunction, defaultArea }: any) => {
+  console.log(defaultArea);
+
   return (
     <select
+      value={defaultArea}
       className="form-select mt-3 block w-full bg-zinc-700 text-stone-100 rounded-xl"
       onChange={onChangeFunction}
     >

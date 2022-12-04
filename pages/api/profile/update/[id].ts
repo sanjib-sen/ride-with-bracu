@@ -1,27 +1,30 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-async function getUser(email: string) {
-  await prisma.userModel.findUnique({
+async function updateUser(email: string, data: object) {
+  const user = await prisma.userModel.update({
     where: {
       email: email,
     },
+    data: data,
   });
+  return user;
 }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const data: unknown = req.query;
-  const user = await getUser(data as string)
-    .then(async () => {
+  const email: unknown = req.query.id;
+  const data = req.body;
+  await updateUser(email as string, data)
+    .then(async (user) => {
       await prisma.$disconnect();
+      res.status(200).json({ user });
     })
     .catch(async (e) => {
       console.error(e);
       await prisma.$disconnect();
       process.exit(1);
     });
-  res.status(200).json({ user });
 }

@@ -1,23 +1,28 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+async function getUser(email: string) {
+  const user = await prisma.userModel.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  return user;
+}
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Get data submitted in request's body.
-  const queries = req.body;
-
-  // Optional logging to see the responses
-  // in the command line where next.js app is running.
-  console.log("Hello");
-  
-  console.log("Queries: ", queries);
-
-  // Guard clause checks for first and last name,
-  // and returns early if they are not found
-  //   if (!body.first || !body.last) {
-  //     // Sends a HTTP bad request error code
-  //     return res.status(400).json({ data: "First or last name not found" });
-  //   }
-
-  // Found the name.
-  // Sends a HTTP success code
-  res.status(200).json({ data: `${queries}` });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const data: unknown = req.query.id;
+  await getUser(data as string)
+    .then(async (user) => {
+      await prisma.$disconnect();
+      res.status(200).json({ user });
+    })
+    .catch(async (e) => {
+      console.error(e);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
 }

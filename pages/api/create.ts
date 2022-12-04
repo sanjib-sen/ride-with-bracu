@@ -1,20 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+import { userData } from "../../types/userData";
 const prisma = new PrismaClient();
-async function getUser(email: string) {
-  await prisma.userModel.findUnique({
-    where: {
-      email: email,
-    },
+
+async function createUser(userData: userData) {
+  await prisma.userModel.create({
+    data: userData,
   });
 }
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const data: unknown = req.query;
-  const user = await getUser(data as string)
+  const data = req.body;
+  await createUser(data)
     .then(async () => {
       await prisma.$disconnect();
     })
@@ -23,5 +22,5 @@ export default async function handler(
       await prisma.$disconnect();
       process.exit(1);
     });
-  res.status(200).json({ user });
+  res.status(200).json({ success: true, message: "User Creation Succesfull." });
 }

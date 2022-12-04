@@ -14,27 +14,30 @@ model LocationModel {
   id                 Int                      @id @default(autoincrement())
   name               String?
   userLocationStates UserLocationStateModel[]
-  users              UserModel[]
+  // users              UserModel[]
 }
 
 model UserLocationStateModel {
   id         Int           @id @default(autoincrement())
   location   LocationModel @relation(fields: [locationId], references: [id])
   locationId Int
-  users      UserModel[]
+  // users      UserModel[]
   fromBRACU  Boolean       @default(false)
   createdAt  DateTime      @default(now())
 }
 
 model UserModel {
-  id                  Int                     @id @default(autoincrement())
-  email               String                  @unique
+  id                  Int      @id @default(autoincrement())
+  email               String   @unique
   name                String
   image               String?
   facebook            String?
   whatsapp            String?
-  userLocationState   UserLocationStateModel? @relation(fields: [userLocationStateId], references: [id])
-  userLocationStateId Int?
-  defaultLocation     LocationModel?          @relation(fields: [defaultLocationId], references: [id])
-  defaultLocationId   Int?
+  // userLocationState   UserLocationStateModel? @relation(fields: [userLocationStateId], references: [id])
+  // userLocationStateId Int?
+  // defaultLocation     LocationModel?          @relation(fields: [defaultLocationId], references: [id])
+  // defaultLocationId   Int?
+  defaultLocationName String
+  currentLocationName String?
+  fromBRACU           Boolean?
 }

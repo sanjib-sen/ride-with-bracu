@@ -4,4 +4,5 @@ export type userData = {
   image?: string | null;
   facebook?: string | null;
   whatsapp?: string | null;
+  defaultLocationName: string;
 };

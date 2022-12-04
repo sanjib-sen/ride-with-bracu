@@ -11,6 +11,7 @@ export async function createUserModel(userData: userData) {
         name: userData.name,
         email: userData.email,
         image: userData.image,
+        defaultLocationName: userData.defaultLocationName,
       },
     });
     console.log(user);
