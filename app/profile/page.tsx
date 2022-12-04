@@ -35,10 +35,6 @@ export default function Profile() {
 
   function handleSelectChange(event: any) {
     const selectedValue = event.target.value;
-    // setLocation({
-    //   name: selectedValue,
-    //   value: selectedValue.replaceAll(" ", "-").toLowerCase(),
-    // });
     setLocation(selectedValue);
     console.log(selectedValue, location);
   }
@@ -54,19 +50,16 @@ export default function Profile() {
       const profile = {
         facebook: facebook,
         whatsapp: whatsapp,
-        // location: location,
         name: session.user.name,
         email: session.user.email,
         image: session.user.image,
         defaultLocationName: location,
       };
       (async () => {
-        const res = await fetch("api/profile/create", {
+        await fetch("api/profile/create", {
           method: "POST",
           body: JSON.stringify(profile),
           headers: { "Content-Type": "application/json" },
-        }).then(async (res) => {
-          console.log(await res.json());
         });
       })();
     } else if (
