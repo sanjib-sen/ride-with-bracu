@@ -1,50 +1,74 @@
 "use client";
 import Information from "../../components/Notes/Info";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
+
+const refreshInterval = 5 * 1000; // Make it zero "0" to turn off
+
+const fetcher = (...args: [RequestInfo]) =>
+  fetch(...args).then((res) => res.json());
+
+export function useRiders(url: string | null) {
+  const { data, error } = useSWR(url, fetcher, {
+    refreshInterval: refreshInterval,
+  });
+  return {
+    riders: data,
+    isRidersLoading: !error && !data,
+    isRidersError: error,
+  };
+}
+
+export function useUser(url: string | null) {
+  const { data, error } = useSWR(url, fetcher);
+  return {
+    user: data,
+    isUserLoading: !error && !data,
+    isUserError: error,
+  };
+}
+
 export default function Search() {
   const { data: session, status } = useSession();
-  const [riders, setRiders] = useState<any[]>([]);
   const router = useRouter();
+
+  const { user } = useUser(
+    status === "authenticated" ? `api/profile/${session?.user?.email}` : null
+  );
+  const { riders } = useRiders(
+    status === "authenticated" && user ? `api/riders/${user.fromBRACU}` : null
+  );
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
-    if (status === "authenticated") {
-      (async () => {
-        const res = await fetch(`api/profile/${session?.user?.email}`, {
-          method: "GET",
-          next: { revalidate: 5 },
-        });
-        const data = await res.json();
-        if (data.fromBRACU && data.currentLocationName) {
-          const res = await fetch(`api/riders/${data.fromBRACU}`, {
-            method: "GET",
-          });
-          const usersList = await res.json();
-          setRiders(usersList);
-        } else {
-          router.push("/location");
-        }
-      })();
+
+    if (
+      status === "authenticated" &&
+      user &&
+      !user.currentLocationName &&
+      !user.fromBRACU
+    ) {
+      router.push("/location");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [status, user]);
 
   function onEndSearch() {
-    const profile = {
+    const data = {
       currentLocationName: null,
       fromBRACU: null,
     };
     (async () => {
       await fetch(`api/profile/update/${session?.user?.email}`, {
         method: "POST",
-        body: JSON.stringify(profile),
+        body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
       });
     })();
@@ -81,7 +105,7 @@ export default function Search() {
       <div className="gap-25 justify-center items-center px-5 py-5">
         <table className="">
           <tbody>
-            {riders?.map((rider) => {
+            {riders?.map((rider: any) => {
               return (
                 <tr key={rider.email}>
                   <td className="text-xl text-slate-100 px-5">
