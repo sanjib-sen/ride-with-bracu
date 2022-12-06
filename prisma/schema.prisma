@@ -6,29 +6,30 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  // provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-model LocationModel {
-  id                 Int                      @id @default(autoincrement())
-  name               String?
-  userLocationStates UserLocationStateModel[]
-  // users              UserModel[]
-}
+// model LocationModel {
+//   id                 Int                      @id @default(autoincrement())
+//   name               String?
+//   userLocationStates UserLocationStateModel[]
+//   // users              UserModel[]
+// }
 
-model UserLocationStateModel {
-  id         Int           @id @default(autoincrement())
-  location   LocationModel @relation(fields: [locationId], references: [id])
-  locationId Int
-  // users      UserModel[]
-  fromBRACU  Boolean       @default(false)
-  createdAt  DateTime      @default(now())
-}
+// model UserLocationStateModel {
+//   id         Int           @id @default(autoincrement())
+//   location   LocationModel @relation(fields: [locationId], references: [id])
+//   locationId Int
+//   // users      UserModel[]
+//   fromBRACU  Boolean       @default(false)
+//   createdAt  DateTime      @default(now())
+// }
 
 model UserModel {
-  id                  Int      @id @default(autoincrement())
-  email               String   @unique
+  id                  Int       @id @default(autoincrement())
+  email               String    @unique
   name                String
   image               String?
   facebook            String?
@@ -40,4 +41,5 @@ model UserModel {
   defaultLocationName String
   currentLocationName String?
   fromBRACU           Boolean?
+  requestedAt         DateTime?
 }

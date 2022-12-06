@@ -94,7 +94,7 @@ export default function Profile() {
     <>
       <div className="grid md:grid-cols-2  md:gap-5 md:divide-x">
         <div className="grid justify-center items-center grid-rows-3 px-5 lg:px-32 py-5">
-          <p className="text-2xl md:text-4xl text-stone-100">
+          <p className="text-2xl md:text-4xl text-stone-100 text-center">
             {saved
               ? "😶‍🌫️ " + session?.user?.name + "'s Profile"
               : "😶‍🌫️ Let's Set up your Profile"}

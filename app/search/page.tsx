@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import Image from "next/image";
+import TimeAgo from "react-timeago";
+import isSearching from "../../utils/checkIfSearching";
 
 const refreshInterval = 5 * 1000; // Make it zero "0" to turn off
 
@@ -48,12 +50,7 @@ export default function Search() {
       router.push("/login");
     }
 
-    if (
-      status === "authenticated" &&
-      user &&
-      !user.currentLocationName &&
-      !user.fromBRACU
-    ) {
+    if (status === "authenticated" && user && !isSearching(user)) {
       router.push("/location");
     }
 
@@ -64,6 +61,7 @@ export default function Search() {
     const data = {
       currentLocationName: null,
       fromBRACU: null,
+      requestedAt: null,
     };
     (async () => {
       await fetch(`api/profile/update/${session?.user?.email}`, {
@@ -78,7 +76,7 @@ export default function Search() {
   return (
     <div className="grid lg:grid-cols-2  lg:gap-5 lg:divide-x">
       <div className="grid justify-center items-center px-5 lg:px-32 py-5 gap-20">
-        <p className="text-2xl md:text-4xl text-stone-100">
+        <p className="text-2xl md:text-4xl text-stone-100 text-center">
           🔎 Searching for University friends 🐍
         </p>
         <Image
@@ -93,7 +91,7 @@ export default function Search() {
           description="Searching will be automatically stopped after 30 minutes in case you forget to click End Search"
         />
         <button
-          className="py-2 bg-blue-600 text-zinc-50"
+          className="py-2 bg-blue-600 text-zinc-50 rounded-lg"
           onClick={() => {
             onEndSearch();
           }}
@@ -102,8 +100,11 @@ export default function Search() {
         </button>
       </div>
 
-      <div className="flex flex-row justify-center items-center px-5 py-5">
-        <table className="table-fixed	border-collapse border-spacing-2 border border-slate-500">
+      <div className="flex flex-col justify-center items-center px-5 py-5">
+        <p className="text-2xl md:text-4xl text-stone-100 text-start p-10">
+          Looking for Rides :
+        </p>
+        <table className="flex flex-row table-fixed	border-collapse border-spacing-2 border border-slate-500">
           <tbody>
             {riders?.map((rider: any) => {
               return (
@@ -111,7 +112,25 @@ export default function Search() {
                   <td className="text-xl text-slate-100 px-5">
                     {rider.currentLocationName}
                   </td>
+                  {rider.image ? (
+                    <td className="p-3">
+                      <div className="p-3 relative block rounded-lg">
+                        <Image
+                          src={rider.image}
+                          fill
+                          alt="Call with WhatsApp"
+                          className="rounded-lg"
+                        />
+                      </div>
+                    </td>
+                  ) : (
+                    ""
+                  )}
                   <td className="text-xl text-slate-100 px-5">{rider.name}</td>
+                  <td className="text-xl text-slate-100 px-5 text-center">
+                    <TimeAgo date={rider.requestedAt} />
+                  </td>
+
                   {rider.whatsapp ? (
                     <td className="p-3">
                       <Link
@@ -145,7 +164,10 @@ export default function Search() {
                     ""
                   )}
                   <td className="p-3">
-                    <Link href={rider.email} className="p-3 relative block">
+                    <Link
+                      href={"mailto:" + rider.email}
+                      className="p-3 relative block"
+                    >
                       <Image
                         src="/logo/gmail.svg"
                         fill
