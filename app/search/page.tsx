@@ -1,6 +1,6 @@
 "use client";
 import Information from "../../components/Notes/Info";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,9 +10,32 @@ export default function Search() {
   const [riders, setRiders] = useState<any[]>([]);
   const [saved, setSaved] = useState(false);
   const router = useRouter();
-  if (!session) {
-    router.push("/");
-  }
+
+  useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
+
+    (async () => {
+      if (session && saved === false) {
+        const res = await fetch(`api/profile/${session?.user?.email}`, {
+          method: "GET",
+        });
+        const data = await res.json();
+        if (data.fromBRACU && data.currentLocationName) {
+          const res = await fetch(`api/riders/${data.fromBRACU}`, {
+            method: "GET",
+          });
+          const usersList = await res.json();
+          setRiders(usersList);
+          setSaved(true);
+        } else {
+          router.push("/location");
+        }
+      }
+    })();
+  }, [router, saved, session]);
+
   function onEndSearch() {
     const profile = {
       currentLocationName: null,
@@ -27,26 +50,6 @@ export default function Search() {
     })();
     router.push("/location");
   }
-
-  (async () => {
-    if (session && saved === false) {
-      const res = await fetch(`api/profile/${session?.user?.email}`, {
-        method: "GET",
-      });
-      const data = await res.json();
-      if (data.fromBRACU && data.currentLocationName) {
-        const res = await fetch(`api/riders/${data.fromBRACU}`, {
-          method: "GET",
-        });
-        const usersList = await res.json();
-        setRiders(usersList);
-        setSaved(true);
-      } else {
-        setSaved(true);
-        router.push("/location");
-      }
-    }
-  })();
 
   return (
     <div className="grid md:grid-cols-2  md:gap-5 md:divide-x">

@@ -2,14 +2,18 @@
 
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { SignIn } from "./SignIn";
+import { useEffect } from "react";
 export default function HomePage() {
   const router = useRouter();
   const { data: session } = useSession();
-  if (!session) {
-    return <SignIn />;
-  } else {
-    router.push("/location");
-  }
+
+  useEffect(() => {
+    if (session === null) {
+      router.push("/login");
+    } else {
+      router.push("/location");
+    }
+  }, [router, session]);
+
   return <></>;
 }

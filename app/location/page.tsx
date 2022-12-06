@@ -2,7 +2,7 @@
 
 import { SelectOptions } from "../../components/SelectOptions";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Search() {
@@ -12,35 +12,34 @@ export default function Search() {
   const [fromBRACU, setFromBRACU] = useState(true);
   const router = useRouter();
 
-  if (!session) {
-    router.push("/");
-  }
-
-  (async () => {
-    if (session && saved === false) {
-      const res = await fetch(`api/profile/${session?.user?.email}`, {
-        method: "GET",
-      });
-      const data = await res.json();
-      if (data) {
-        setLocation(data.defaultLocationName);
-        setSaved(true);
-      } else {
-        return router.push("/profile");
-      }
+  useEffect(() => {
+    if (session === null) {
+      router.push("/login");
     }
-  })();
+    (async () => {
+      if (session && saved === false) {
+        const res = await fetch(`api/profile/${session?.user?.email}`, {
+          method: "GET",
+        });
+        const data = await res.json();
+        if (data) {
+          setLocation(data.defaultLocationName);
+          setSaved(true);
+        } else {
+          router.push("/profile");
+        }
+      }
+    })();
+  }, [router, saved, session]);
 
   function handleLocationChange(event: any) {
     const selectedValue = event.target.value;
     setLocation(selectedValue);
-    console.log(selectedValue, location);
   }
 
   function handleFromBRACUChange(event: any) {
     const selectedValue = event.target.value === "fromBracu";
     setFromBRACU(selectedValue);
-    console.log(selectedValue, fromBRACU);
   }
 
   function onFormSubmit() {
@@ -49,14 +48,11 @@ export default function Search() {
         currentLocationName: location,
         fromBRACU: fromBRACU,
       };
-      console.log(profile);
       (async () => {
         const res = await fetch(`api/profile/update/${session.user?.email}`, {
           method: "POST",
           body: JSON.stringify(profile),
           headers: { "Content-Type": "application/json" },
-        }).then(async (res) => {
-          console.log(await res.json());
         });
       })();
       router.push("/search");

@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { SelectOptions } from "../../components/SelectOptions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Information from "../../components/Notes/Info";
 import Warning from "../../components/Notes/Warning";
 import { useRouter } from "next/navigation";
@@ -14,29 +14,29 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
   const router = useRouter();
 
-  if (!session) {
-    router.push("/");
-  }
-
-  (async () => {
-    if (session && saved === false) {
-      const res = await fetch(`api/profile/${session?.user?.email}`, {
-        method: "GET",
-      });
-      const data = await res.json();
-      if (data) {
-        setFacebook(data.facebook);
-        setWhatsapp(data.whatsapp);
-        setLocation(data.defaultLocationName);
-        setSaved(true);
-      }
+  useEffect(() => {
+    if (session === null) {
+      router.push("/login");
     }
-  })();
+    (async () => {
+      if (session && saved === false) {
+        const res = await fetch(`api/profile/${session?.user?.email}`, {
+          method: "GET",
+        });
+        const data = await res.json();
+        if (data) {
+          setFacebook(data.facebook);
+          setWhatsapp(data.whatsapp);
+          setLocation(data.defaultLocationName);
+          setSaved(true);
+        }
+      }
+    })();
+  }, [router, saved, session]);
 
   function handleSelectChange(event: any) {
     const selectedValue = event.target.value;
     setLocation(selectedValue);
-    console.log(selectedValue, location);
   }
 
   function onFormSubmit() {
