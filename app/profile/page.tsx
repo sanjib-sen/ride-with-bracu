@@ -62,6 +62,8 @@ export default function Profile() {
           method: "POST",
           body: JSON.stringify(profile),
           headers: { "Content-Type": "application/json" },
+        }).then(async (res) => {
+          router.push("/location");
         });
       })();
     } else if (
@@ -79,16 +81,15 @@ export default function Profile() {
         defaultLocationName: location,
       };
       (async () => {
-        const res = await fetch(`api/profile/update/${session.user?.email}`, {
+        await fetch(`api/profile/update/${session.user?.email}`, {
           method: "POST",
           body: JSON.stringify(profile),
           headers: { "Content-Type": "application/json" },
         }).then(async (res) => {
-          console.log(await res.json());
+          router.push("/location");
         });
       })();
     }
-    router.push("/location");
   }
 
   const profileImage = (imageSrc: string | undefined | null) => {
@@ -111,7 +112,7 @@ export default function Profile() {
   return (
     <>
       <div className="grid md:grid-cols-2  md:gap-5 md:divide-x">
-        <div className="grid justify-center items-center grid-rows-3 px-5 lg:px-32 py-5 gap-5">
+        <div className="flex flex-col justify-center px-5 lg:px-15 py-5 gap-5">
           <p className="flex flex-row text-2xl md:text-4xl text-stone-100 text-center gap-5">
             {saved ? profileImage(session?.user?.image) : ""}
             {saved
@@ -137,7 +138,7 @@ export default function Profile() {
                         the link."
           />
         </div>
-        <div className="grid justify-center items-center grid-rows-3 px-5 py-5 gap-2">
+        <div className="flex flex-col px-5 py-5 gap-7 lg:px-16">
           <label className="block">
             <div className="text-stone-100 text-lg">
               Whatsapp Voice Call Link (Recommended)
@@ -182,7 +183,7 @@ export default function Profile() {
             />
           </label>
           <button
-            className="py-2 bg-blue-600 text-zinc-50"
+            className="py-2 bg-blue-600 text-zinc-50 rounded-lg"
             onClick={() => {
               onFormSubmit();
             }}

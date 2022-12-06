@@ -76,7 +76,7 @@ export default function Search() {
 
   return (
     <div className="grid lg:grid-cols-2  lg:gap-5 lg:divide-x">
-      <div className="grid justify-center items-center px-5 lg:px-32 py-5 gap-20">
+      <div className="flex flex-col items-center gap-5 px-5">
         <p className="text-2xl md:text-4xl text-stone-100 text-center">
           🔎 Searching for University friends 🐍
         </p>
@@ -92,7 +92,7 @@ export default function Search() {
           description="Searching will be automatically stopped after 30 minutes in case you forget to click End Search"
         />
         <button
-          className="py-2 bg-blue-600 text-zinc-50 rounded-lg"
+          className="py-2 px-10 bg-blue-600 text-zinc-50 rounded-lg"
           onClick={() => {
             onEndSearch();
           }}
@@ -101,81 +101,88 @@ export default function Search() {
         </button>
       </div>
 
-      <div className="flex flex-col justify-center items-center px-5 py-5">
-        <p className="text-2xl md:text-4xl text-stone-100 text-start p-10">
+      <div className="flex flex-col px-5 py-5">
+        <p className="text-2xl md:text-4xl text-stone-100 text-left mb-5">
           Looking for Rides :
         </p>
-        <table className="flex flex-row table-fixed	border-collapse border-spacing-2 border border-slate-500">
+        <table className="border-spacing-2 table-auto border border-slate-500">
           <tbody>
             {riders?.map((rider: any) => {
               return (
-                <tr key={rider.email} className="border border-spacing-10">
-                  <td className="text-xl text-slate-100 px-5">
-                    {rider.currentLocationName}
-                  </td>
+                <tr
+                  key={rider.email}
+                  className="border grid grid-flow-row xs:grid-flow-col xs:grid-cols-5 justify-items-center items-center gap-3"
+                >
                   {rider.image ? (
-                    <td className="p-3">
-                      <div className="p-3 relative block rounded-lg">
+                    <td>
+                      <div className="relative p-5">
                         <Image
                           src={rider.image}
                           fill
-                          alt="Call with WhatsApp"
-                          className="rounded-lg"
+                          alt="Profile Photo"
+                          className="rounded-full"
                         />
                       </div>
                     </td>
                   ) : (
                     ""
                   )}
-                  <td className="text-xl text-slate-100 px-5">{rider.name}</td>
-                  <td className="text-xl text-slate-100 px-5 text-center">
+                  <td className="text-lg md:text-xl text-slate-100 text-left">
+                    {rider.name}
+                  </td>
+                  <td className="text-lg md:text-xl text-slate-100">
+                    {rider.currentLocationName}
+                  </td>
+                  <td className="text-lg md:text-xl text-slate-100 text-center">
                     <TimeAgo date={rider.requestedAt} />
                   </td>
 
-                  {rider.whatsapp ? (
-                    <td className="p-3">
+                  <div className="flex flex-row gap-4">
+                    {rider.whatsapp ? (
+                      <td>
+                        <Link
+                          href={rider.whatsapp}
+                          className="p-3 relative block"
+                        >
+                          <Image
+                            src="/logo/whatsapp.svg"
+                            fill
+                            alt="Call with WhatsApp"
+                          />
+                        </Link>
+                      </td>
+                    ) : (
+                      ""
+                    )}
+                    {rider.facebook ? (
+                      <td>
+                        <Link
+                          href={rider.facebook}
+                          className="p-3 relative block"
+                        >
+                          <Image
+                            src="/logo/facebook.svg"
+                            alt="Contact via Messenger"
+                            fill
+                          />
+                        </Link>
+                      </td>
+                    ) : (
+                      ""
+                    )}
+                    <td>
                       <Link
-                        href={rider.whatsapp}
+                        href={"mailto:" + rider.email}
                         className="p-3 relative block"
                       >
                         <Image
-                          src="/logo/whatsapp.svg"
+                          src="/logo/gmail.svg"
                           fill
-                          alt="Call with WhatsApp"
+                          alt="Send an Email to G-Suite"
                         />
                       </Link>
                     </td>
-                  ) : (
-                    ""
-                  )}
-                  {rider.facebook ? (
-                    <td className="p-3">
-                      <Link
-                        href={rider.facebook}
-                        className="p-3 relative block"
-                      >
-                        <Image
-                          src="/logo/facebook.svg"
-                          alt="Contact via Messenger"
-                          fill
-                        />
-                      </Link>
-                    </td>
-                  ) : (
-                    ""
-                  )}
-                  <td className="p-3">
-                    <Link
-                      href={"mailto:" + rider.email}
-                      className="p-3 relative block"
-                    >
-                      <Image
-                        src="/logo/gmail.svg"
-                        fill
-                        alt="Send an Email to G-Suite"
-                      />
-                    </Link>
-                  </td>
+                  </div>
                 </tr>
               );
             })}
