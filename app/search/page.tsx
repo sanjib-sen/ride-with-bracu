@@ -3,9 +3,9 @@ import Information from "../../components/Notes/Info";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
+import Image from "next/image";
 
 const refreshInterval = 5 * 1000; // Make it zero "0" to turn off
 
@@ -76,7 +76,7 @@ export default function Search() {
   }
 
   return (
-    <div className="grid md:grid-cols-2  md:gap-5 md:divide-x">
+    <div className="grid lg:grid-cols-2  lg:gap-5 lg:divide-x">
       <div className="grid justify-center items-center px-5 lg:px-32 py-5 gap-20">
         <p className="text-2xl md:text-4xl text-stone-100">
           🔎 Searching for University friends 🐍
@@ -102,21 +102,56 @@ export default function Search() {
         </button>
       </div>
 
-      <div className="gap-25 justify-center items-center px-5 py-5">
-        <table className="">
+      <div className="flex flex-row justify-center items-center px-5 py-5">
+        <table className="table-fixed	border-collapse border-spacing-2 border border-slate-500">
           <tbody>
             {riders?.map((rider: any) => {
               return (
-                <tr key={rider.email}>
+                <tr key={rider.email} className="border border-spacing-10">
                   <td className="text-xl text-slate-100 px-5">
                     {rider.currentLocationName}
                   </td>
                   <td className="text-xl text-slate-100 px-5">{rider.name}</td>
-                  <td className="text-xl text-blue-300 px-5">
-                    <Link href={rider.whatsapp}>Whatsapp Call</Link>
-                  </td>
-                  <td className="text-xl text-blue-300 px-5">
-                    <Link href={rider.facebook}>Facebook / Messenger</Link>
+                  {rider.whatsapp ? (
+                    <td className="p-3">
+                      <Link
+                        href={rider.whatsapp}
+                        className="p-3 relative block"
+                      >
+                        <Image
+                          src="/logo/whatsapp.svg"
+                          fill
+                          alt="Call with WhatsApp"
+                        />
+                      </Link>
+                    </td>
+                  ) : (
+                    ""
+                  )}
+                  {rider.facebook ? (
+                    <td className="p-3">
+                      <Link
+                        href={rider.facebook}
+                        className="p-3 relative block"
+                      >
+                        <Image
+                          src="/logo/facebook.svg"
+                          alt="Contact via Messenger"
+                          fill
+                        />
+                      </Link>
+                    </td>
+                  ) : (
+                    ""
+                  )}
+                  <td className="p-3">
+                    <Link href={rider.email} className="p-3 relative block">
+                      <Image
+                        src="/logo/gmail.svg"
+                        fill
+                        alt="Send an Email to G-Suite"
+                      />
+                    </Link>
                   </td>
                 </tr>
               );
