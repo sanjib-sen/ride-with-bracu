@@ -6,20 +6,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 export default function Search() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [riders, setRiders] = useState<any[]>([]);
-  const [saved, setSaved] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    if (!session) {
+    if (status === "unauthenticated") {
       router.push("/login");
     }
-
-    (async () => {
-      if (session && saved === false) {
+    if (status === "authenticated") {
+      (async () => {
         const res = await fetch(`api/profile/${session?.user?.email}`, {
           method: "GET",
+          next: { revalidate: 5 },
         });
         const data = await res.json();
         if (data.fromBRACU && data.currentLocationName) {
@@ -28,13 +27,14 @@ export default function Search() {
           });
           const usersList = await res.json();
           setRiders(usersList);
-          setSaved(true);
         } else {
           router.push("/location");
         }
-      }
-    })();
-  }, [router, saved, session]);
+      })();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   function onEndSearch() {
     const profile = {

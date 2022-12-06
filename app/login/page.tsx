@@ -1,24 +1,19 @@
 "use client";
 import { signIn } from "next-auth/react";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SignIn() {
-  const { data: session } = useSession();
-
-  const [saved, setSaved] = useState(false);
-
-  (async () => {
-    if (session && saved === false) {
-      const res = await fetch(`api/profile/${session?.user?.email}`, {
-        method: "GET",
-      });
-      const data = await res.json();
-      if (data) {
-        setSaved(true);
-      }
+  const { status } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/location");
     }
-  })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
   return (
     <>
       <div className="grid md:grid-cols-2 gap-5 md:divide-x">

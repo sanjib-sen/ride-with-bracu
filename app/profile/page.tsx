@@ -7,7 +7,7 @@ import Warning from "../../components/Notes/Warning";
 import { useRouter } from "next/navigation";
 
 export default function Profile() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [facebook, setFacebook] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [location, setLocation] = useState("");
@@ -15,11 +15,11 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
-    if (session === null) {
+    if (status === "unauthenticated") {
       router.push("/login");
     }
-    (async () => {
-      if (session && saved === false) {
+    if (status === "authenticated" && saved === false) {
+      (async () => {
         const res = await fetch(`api/profile/${session?.user?.email}`, {
           method: "GET",
         });
@@ -30,9 +30,10 @@ export default function Profile() {
           setLocation(data.defaultLocationName);
           setSaved(true);
         }
-      }
-    })();
-  }, [router, saved, session]);
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   function handleSelectChange(event: any) {
     const selectedValue = event.target.value;

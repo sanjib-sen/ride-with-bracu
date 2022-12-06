@@ -6,31 +6,30 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Search() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [location, setLocation] = useState({});
-  const [saved, setSaved] = useState(false);
   const [fromBRACU, setFromBRACU] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    if (session === null) {
-      router.push("/login");
-    }
     (async () => {
-      if (session && saved === false) {
+      if (status === "unauthenticated") {
+        router.push("/login");
+      }
+      if (status === "authenticated") {
         const res = await fetch(`api/profile/${session?.user?.email}`, {
           method: "GET",
         });
         const data = await res.json();
         if (data) {
           setLocation(data.defaultLocationName);
-          setSaved(true);
         } else {
           router.push("/profile");
         }
       }
     })();
-  }, [router, saved, session]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   function handleLocationChange(event: any) {
     const selectedValue = event.target.value;
