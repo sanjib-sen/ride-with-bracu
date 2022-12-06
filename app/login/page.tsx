@@ -24,7 +24,7 @@ export default function SignIn() {
           <button
             className="py-2 px-20 bg-blue-600 rounded-md text-zinc-50"
             onClick={() => {
-              signIn("google");
+              signIn("google", { callbackUrl: "/location" });
             }}
           >
             🚗 Lessgo 🚗
