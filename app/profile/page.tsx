@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Information from "../../components/Notes/Info";
 import Warning from "../../components/Notes/Warning";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Profile() {
   const { data: session, status } = useSession();
@@ -90,14 +91,32 @@ export default function Profile() {
     router.push("/location");
   }
 
+  const profileImage = (imageSrc: string | undefined | null) => {
+    if (imageSrc) {
+      return (
+        <div className="p-5 relative block rounded-lg">
+          <Image
+            src={imageSrc}
+            fill
+            alt="Call with WhatsApp"
+            className="rounded-lg"
+          />
+        </div>
+      );
+    } else {
+      ("😶‍🌫️ ");
+    }
+  };
+
   return (
     <>
       <div className="grid md:grid-cols-2  md:gap-5 md:divide-x">
-        <div className="grid justify-center items-center grid-rows-3 px-5 lg:px-32 py-5">
-          <p className="text-2xl md:text-4xl text-stone-100 text-center">
+        <div className="grid justify-center items-center grid-rows-3 px-5 lg:px-32 py-5 gap-5">
+          <p className="flex flex-row text-2xl md:text-4xl text-stone-100 text-center gap-5">
+            {saved ? profileImage(session?.user?.image) : ""}
             {saved
-              ? "😶‍🌫️ " + session?.user?.name + "'s Profile"
-              : "😶‍🌫️ Let's Set up your Profile"}
+              ? session?.user?.name + "'s Profile"
+              : "Let's Set up your Profile"}
           </p>
           <p className="text-md md:text-xl text-stone-100 text-justify">
             Add your Default Location, Whatsapp Call Link (Recommended but

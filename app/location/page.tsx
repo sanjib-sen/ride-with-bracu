@@ -58,9 +58,10 @@ export default function Search() {
           method: "POST",
           body: JSON.stringify(data),
           headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+          router.push("/search");
         });
       })();
-      router.push("/search");
     }
   }
 
