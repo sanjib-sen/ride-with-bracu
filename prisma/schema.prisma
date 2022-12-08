@@ -6,10 +6,13 @@ generator client {
 }
 
 datasource db {
-  // provider = "postgresql"
-  provider = "sqlite"
-  // url      = env("DATABASE_URL")
-  url      = "file:./dev.db"
+  // for production
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+
+  // for Development
+  // provider = "sqlite"
+  // url      = "file:./dev.db"
 }
 
 // model LocationModel {
