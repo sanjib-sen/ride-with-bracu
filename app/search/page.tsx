@@ -49,7 +49,7 @@ export default function Search() {
       ? `api/profile/${session.user.email}`
       : null
   );
-  const { riders } = useRiders(
+  const { riders, isRidersLoading } = useRiders(
     status === "authenticated" && (fromBRACU === true || fromBRACU === false)
       ? `api/riders/${fromBRACU}`
       : null
@@ -63,15 +63,17 @@ export default function Search() {
     (async () => {
       if (status === "authenticated" && session.user?.email) {
         const user = await getUserSession(session.user.email);
+
         if (user) {
+          // In case of inactivity:
+          if (!isRidersLoading && riders.length < 1) {
+            setUserIsSearching(false);
+          }
+
           setLocation(user.defaultLocationName);
           if (isSearching(user)) {
             setUserIsSearching(true);
             setClickedSearch(true);
-          } else {
-            if (clickedSearch) {
-              router.push("/search");
-            }
           }
         } else {
           router.push("/profile");
@@ -80,7 +82,7 @@ export default function Search() {
     })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, riders]);
+  }, [status, riders, user]);
 
   function handleLocationChange(event: any) {
     const selectedValue = event.target.value;

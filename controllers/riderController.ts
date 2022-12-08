@@ -1,3 +1,4 @@
+import { minuteToEndSearch } from "../global/variables";
 import { prisma } from "../prisma/client";
 import minutesAgo from "../utils/minutesAgo";
 
@@ -6,7 +7,7 @@ export async function getRiders(fromBracu: boolean) {
     where: {
       fromBRACU: fromBracu,
       requestedAt: {
-        gte: minutesAgo(30),
+        gte: minutesAgo(minuteToEndSearch),
       },
     },
   });
