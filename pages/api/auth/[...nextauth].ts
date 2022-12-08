@@ -17,6 +17,13 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: googleId,
       clientSecret: googleScreet,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
 };
