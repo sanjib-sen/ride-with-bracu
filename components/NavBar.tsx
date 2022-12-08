@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { removeUserSession } from "../session/session";
 const Nav = () => {
   const pathname = usePathname();
   if (pathname === "/login") {
@@ -32,7 +33,8 @@ const Nav = () => {
           Sign Out
         </button>
         <button
-          onClick={() => {
+          onClick={async () => {
+            await removeUserSession();
             signOut({ callbackUrl: "/login" });
           }}
           className="hidden md:inline-block text-xl px-4 py-2 border rounded text-white border-white"

@@ -6,12 +6,7 @@ import Information from "../../components/Notes/Info";
 import Warning from "../../components/Notes/Warning";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import {
-  createUser,
-  getUserSession,
-  setUserSession,
-  updateUser,
-} from "../../session/session";
+import { createUser, getUserSession, updateUser } from "../../session/session";
 
 export default function Profile() {
   const { data: session, status } = useSession();
@@ -66,7 +61,7 @@ export default function Profile() {
       };
       (async () => {
         await createUser(profile);
-        router.push("/location");
+        router.push("/search");
       })();
     } else if (
       session &&
@@ -85,7 +80,7 @@ export default function Profile() {
           }
           await updateUser(data);
         }
-        router.push("/location");
+        router.push("/search");
       })();
     }
   }
@@ -127,6 +122,7 @@ export default function Profile() {
             description="Setting up Facebook, Whatsapp Link can cause you to expose your Whatsapp
                         Call / Facebook Profile Link to public. However, you can always block
                         people from those apps."
+            showTitle={true}
           />
           <Information
             title="Don't you worry!"
@@ -186,7 +182,7 @@ export default function Profile() {
               onFormSubmit();
             }}
           >
-            Submit
+            Save
           </button>
         </div>
       </div>

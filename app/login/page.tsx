@@ -9,7 +9,7 @@ export default function SignIn() {
   const router = useRouter();
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/location");
+      router.push("/search");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
@@ -24,7 +24,7 @@ export default function SignIn() {
           <button
             className="py-2 px-20 bg-blue-600 rounded-md text-zinc-50"
             onClick={() => {
-              signIn("google", { callbackUrl: "/location" });
+              signIn("google", { callbackUrl: "/profile" });
             }}
           >
             🚗 Lessgo 🚗
