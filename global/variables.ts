@@ -1,1 +1,1 @@
-export const minuteToEndSearch = 1;
+export const minuteToEndSearch = 30;

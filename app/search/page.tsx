@@ -42,7 +42,6 @@ export default function Search() {
   const [userIsSearching, setUserIsSearching] = useState(false);
   const [location, setLocation] = useState<string>();
   const [fromBRACU, setFromBRACU] = useState<boolean>(false);
-  const [clickedSearch, setClickedSearch] = useState(false);
   const router = useRouter();
   const { user } = useUser(
     status === "authenticated" && session.user?.email
@@ -73,7 +72,6 @@ export default function Search() {
           setLocation(user.defaultLocationName);
           if (isSearching(user)) {
             setUserIsSearching(true);
-            setClickedSearch(true);
           }
         } else {
           router.push("/profile");
@@ -96,7 +94,6 @@ export default function Search() {
 
   function onStartSearching() {
     setUserIsSearching(true);
-    setClickedSearch(true);
     if (location) {
       (async () => {
         if (session?.user?.email) {
@@ -112,10 +109,8 @@ export default function Search() {
   }
 
   function onEndSearch() {
-    setClickedSearch(false);
     setUserIsSearching(false);
     setFromBRACU(false);
-    router.push("/search");
     (async () => {
       if (user) {
         const data = user;
