@@ -6,6 +6,12 @@ import Information from "../../components/Notes/Info";
 import Warning from "../../components/Notes/Warning";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import {
+  createUser,
+  getUserSession,
+  setUserSession,
+  updateUser,
+} from "../../session/session";
 
 export default function Profile() {
   const { data: session, status } = useSession();
@@ -21,15 +27,16 @@ export default function Profile() {
     }
     if (status === "authenticated" && saved === false) {
       (async () => {
-        const res = await fetch(`api/profile/${session?.user?.email}`, {
-          method: "GET",
-        });
-        const data = await res.json();
-        if (data) {
-          setFacebook(data.facebook);
-          setWhatsapp(data.whatsapp);
-          setLocation(data.defaultLocationName);
-          setSaved(true);
+        if (session.user?.email) {
+          const data = await getUserSession(session.user?.email);
+          if (data) {
+            setFacebook(data.facebook ? data.facebook : "");
+            setWhatsapp(data.whatsapp ? data.whatsapp : "");
+            setLocation(
+              data.defaultLocationName ? data.defaultLocationName : ""
+            );
+            setSaved(true);
+          }
         }
       })();
     }
@@ -58,13 +65,8 @@ export default function Profile() {
         defaultLocationName: location,
       };
       (async () => {
-        await fetch("api/profile/create", {
-          method: "POST",
-          body: JSON.stringify(profile),
-          headers: { "Content-Type": "application/json" },
-        }).then(async (res) => {
-          router.push("/location");
-        });
+        await createUser(profile);
+        router.push("/location");
       })();
     } else if (
       session &&
@@ -73,21 +75,17 @@ export default function Profile() {
       session.user.name &&
       saved === true
     ) {
-      const profile = {
-        facebook: facebook,
-        whatsapp: whatsapp,
-        name: session.user.name,
-        image: session.user.image,
-        defaultLocationName: location,
-      };
       (async () => {
-        await fetch(`api/profile/update/${session.user?.email}`, {
-          method: "POST",
-          body: JSON.stringify(profile),
-          headers: { "Content-Type": "application/json" },
-        }).then(async (res) => {
-          router.push("/location");
-        });
+        if (session.user?.email) {
+          const data = await getUserSession(session.user?.email);
+          if (data) {
+            data.facebook = facebook;
+            data.whatsapp = whatsapp;
+            data.defaultLocationName = location;
+          }
+          await updateUser(data);
+        }
+        router.push("/location");
       })();
     }
   }

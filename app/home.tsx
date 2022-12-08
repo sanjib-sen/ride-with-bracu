@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { getUserSession } from "../session/session";
 export default function HomePage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -10,9 +11,17 @@ export default function HomePage() {
     if (status === "unauthenticated") {
       router.push("/login");
     } else if (status === "authenticated") {
-      router.push("/location");
+      (async () => {
+        if (session.user?.email) {
+          const user = await getUserSession(session.user.email);
+          if (user && user.defaultLocationName) {
+            router.push("/location");
+          }
+        }
+      })();
     }
-  }, [router, session, status]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   return <></>;
 }

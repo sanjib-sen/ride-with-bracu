@@ -1,6 +1,6 @@
 "use client";
 import Information from "../../components/Notes/Info";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,6 +8,7 @@ import useSWR from "swr";
 import Image from "next/image";
 import TimeAgo from "react-timeago";
 import isSearching from "../../utils/checkIfSearching";
+import { getUserSession, updateUser } from "../../session/session";
 
 const refreshInterval = 5 * 1000; // Make it zero "0" to turn off
 
@@ -36,10 +37,12 @@ export function useUser(url: string | null) {
 
 export default function Search() {
   const { data: session, status } = useSession();
+  // const [user, setUser] = useState<Partial<UserModel>>();
   const router = useRouter();
-
   const { user } = useUser(
-    status === "authenticated" ? `api/profile/${session?.user?.email}` : null
+    status === "authenticated" && session.user?.email
+      ? `api/profile/${session.user.email}`
+      : null
   );
   const { riders } = useRiders(
     status === "authenticated" && user ? `api/riders/${user.fromBRACU}` : null
@@ -50,49 +53,40 @@ export default function Search() {
       router.push("/login");
     }
 
-    if (status === "authenticated" && user && !isSearching(user)) {
-      router.push("/location");
-    }
+    (async () => {
+      if (status === "authenticated" && session.user?.email) {
+        const user = await getUserSession(session.user.email);
+        if (!isSearching(user)) {
+          router.push("/location");
+        }
+      }
+    })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, user]);
 
   function onEndSearch() {
-    const data = {
-      currentLocationName: null,
-      fromBRACU: null,
-      requestedAt: null,
-    };
+    router.push("/location");
+
     (async () => {
-      await fetch(`api/profile/update/${session?.user?.email}`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      }).then((res) => {
-        router.push("/location");
-      });
+      if (user) {
+        const data = user;
+        data.currentLocationName = null;
+        data.fromBRACU = null;
+        data.requestedAt = null;
+        console.log(data);
+        await updateUser(data);
+      }
     })();
   }
 
   return (
-    <div className="grid lg:grid-cols-2  lg:gap-5 lg:divide-x">
+    <div className="grid lg:grid-cols-3 lg:divide-x">
       <div className="flex flex-col items-center gap-5 px-5">
-        <p className="text-2xl md:text-4xl text-stone-100 text-center">
-          🔎 Searching for University friends 🐍
-        </p>
-        <Image
-          src="/map-search-svgrepo-com.svg"
-          alt="An SVG of an eye"
-          width={200}
-          height={200}
-          className="justify-self-center"
-        />
-        <Information
-          title="Please note"
-          description="Searching will be automatically stopped after 30 minutes in case you forget to click End Search"
-        />
+        <p className="text-4xl text-stone-100 text-left">Looking for Rides :</p>
+        <Information description="Searching will be automatically stopped after 30 minutes in case you forget to click End Search" />
         <button
-          className="py-2 px-10 bg-blue-600 text-zinc-50 rounded-lg"
+          className="py-2 px-10 bg-red-700 text-white rounded-lg"
           onClick={() => {
             onEndSearch();
           }}
@@ -101,88 +95,81 @@ export default function Search() {
         </button>
       </div>
 
-      <div className="flex flex-col px-5 py-5">
-        <p className="text-2xl md:text-4xl text-stone-100 text-left mb-5">
-          Looking for Rides :
-        </p>
+      <div className="flex flex-col px-5 py-5 lg:col-span-2">
         <table className="border-spacing-2 table-auto border border-slate-500">
           <tbody>
             {riders?.map((rider: any) => {
               return (
                 <tr
                   key={rider.email}
-                  className="border grid grid-flow-row xs:grid-flow-col xs:grid-cols-5 justify-items-center items-center gap-3"
+                  className="border grid grid-flow-row xs:grid-flow-col xs:grid-cols-4 justify-items-center items-center"
                 >
-                  {rider.image ? (
-                    <td>
-                      <div className="relative p-5">
+                  <td className="flex flex-row items-center justify-center ml-3">
+                    {rider.image ? (
+                      <span className="p-4 relative flex">
                         <Image
                           src={rider.image}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw,
+              33vw"
                           alt="Profile Photo"
                           className="rounded-full"
                         />
-                      </div>
-                    </td>
-                  ) : (
-                    ""
-                  )}
-                  <td className="text-lg md:text-xl text-slate-100 text-left">
-                    {rider.name}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                    <p className="text-lg md:text-xl text-slate-100 text-left pr-3 p-3">
+                      {rider.name}
+                    </p>
                   </td>
-                  <td className="text-lg md:text-xl text-slate-100">
+                  <td className="text-lg md:text-xl text-slate-100 pr-3">
                     {rider.currentLocationName}
                   </td>
                   <td className="text-lg md:text-xl text-slate-100 text-center">
                     <TimeAgo date={rider.requestedAt} />
                   </td>
 
-                  <div className="flex flex-row gap-4">
+                  <td className="flex flex-row gap-4 pb-3 xs:pb-0">
                     {rider.whatsapp ? (
-                      <td>
-                        <Link
-                          href={rider.whatsapp}
-                          className="p-3 relative block"
-                        >
-                          <Image
-                            src="/logo/whatsapp.svg"
-                            fill
-                            alt="Call with WhatsApp"
-                          />
-                        </Link>
-                      </td>
+                      <Link
+                        href={rider.whatsapp}
+                        className="p-3 relative block"
+                      >
+                        <Image
+                          src="/logo/whatsapp.svg"
+                          fill
+                          alt="Call with WhatsApp"
+                        />
+                      </Link>
                     ) : (
                       ""
                     )}
                     {rider.facebook ? (
-                      <td>
-                        <Link
-                          href={rider.facebook}
-                          className="p-3 relative block"
-                        >
-                          <Image
-                            src="/logo/facebook.svg"
-                            alt="Contact via Messenger"
-                            fill
-                          />
-                        </Link>
-                      </td>
-                    ) : (
-                      ""
-                    )}
-                    <td>
                       <Link
-                        href={"mailto:" + rider.email}
+                        href={rider.facebook}
                         className="p-3 relative block"
                       >
                         <Image
-                          src="/logo/gmail.svg"
+                          src="/logo/facebook.svg"
+                          alt="Contact via Messenger"
                           fill
-                          alt="Send an Email to G-Suite"
                         />
                       </Link>
-                    </td>
-                  </div>
+                    ) : (
+                      ""
+                    )}
+                    <Link
+                      href={"mailto:" + rider.email}
+                      className="p-3 relative block"
+                    >
+                      <Image
+                        src="/logo/gmail.svg"
+                        fill
+                        alt="Send an Email to G-Suite"
+                      />
+                    </Link>
+                  </td>
                 </tr>
               );
             })}
