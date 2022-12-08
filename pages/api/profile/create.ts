@@ -1,26 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-import { UserModel } from "@prisma/client";
+import { getToken } from "next-auth/jwt";
+import { createUser } from "../../../controllers/userController";
 
-async function createUser(userData: UserModel) {
-  await prisma.userModel.create({
-    data: userData,
-  });
-}
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const token = await getToken({ req });
+  if (token === null) {
+    res.status(401).json({ message: "Unauthorized Access" });
+  }
   const data = req.body;
   await createUser(data)
     .then(async (user) => {
-      await prisma.$disconnect();
       res.status(200).json(user);
     })
     .catch(async (e) => {
       console.error(e);
-      await prisma.$disconnect();
       process.exit(1);
     });
 }

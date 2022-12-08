@@ -1,101 +1,152 @@
 "use client";
-import Information from "../../components/Notes/Info";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
+import isSearching from "../../utils/checkIfSearching";
+import { getUserSession, updateUser } from "../../session/session";
+import Warning from "../../components/Notes/Warning";
+import RidersTable from "../../components/RidersTable";
+import { UserModel } from "@prisma/client";
+import moment from "moment";
+import SearchInput from "../../components/SearchInput";
+import Searching from "../../components/Searching";
+
+const refreshInterval = 5 * 1000; // Make it "0 * 100" to to turn it off
+
+const fetcher = (...args: [RequestInfo]) =>
+  fetch(...args).then((res) => res.json());
+
+export function useRiders(url: string | null) {
+  const { data, error } = useSWR(url, fetcher, {
+    refreshInterval: refreshInterval,
+  });
+  return {
+    riders: data as UserModel[],
+    isRidersLoading: !error && !data,
+    isRidersError: error,
+  };
+}
+
+export function useUser(url: string | null) {
+  const { data, error } = useSWR(url, fetcher);
+  return {
+    user: data,
+    isUserLoading: !error && !data,
+    isUserError: error,
+  };
+}
+
 export default function Search() {
-  const { data: session } = useSession();
-  const [riders, setRiders] = useState<any[]>([]);
-  const [saved, setSaved] = useState(false);
+  const { data: session, status } = useSession();
+  const [userIsSearching, setUserIsSearching] = useState(false);
+  const [location, setLocation] = useState<string>();
+  const [fromBRACU, setFromBRACU] = useState<boolean>(false);
   const router = useRouter();
-  if (!session) {
-    router.push("/");
-  }
-  function onEndSearch() {
-    const profile = {
-      currentLocationName: null,
-      fromBRACU: null,
-    };
+  const { user } = useUser(
+    status === "authenticated" && session.user?.email
+      ? `api/profile/${session.user.email}`
+      : null
+  );
+  const { riders, isRidersLoading } = useRiders(
+    status === "authenticated" && (fromBRACU === true || fromBRACU === false)
+      ? `api/riders/${fromBRACU}`
+      : null
+  );
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+
     (async () => {
-      await fetch(`api/profile/update/${session?.user?.email}`, {
-        method: "POST",
-        body: JSON.stringify(profile),
-        headers: { "Content-Type": "application/json" },
-      });
+      if (status === "authenticated" && session.user?.email) {
+        const user = await getUserSession(session.user.email);
+
+        if (user) {
+          // In case of inactivity:
+          if (!isRidersLoading && riders.length < 1) {
+            setUserIsSearching(false);
+          }
+
+          setLocation(user.defaultLocationName);
+          if (isSearching(user)) {
+            setUserIsSearching(true);
+          }
+        } else {
+          router.push("/profile");
+        }
+      }
     })();
-    router.push("/location");
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, riders, user]);
+
+  function handleLocationChange(event: any) {
+    const selectedValue = event.target.value;
+    setLocation(selectedValue);
   }
 
-  (async () => {
-    if (session && saved === false) {
-      const res = await fetch(`api/profile/${session?.user?.email}`, {
-        method: "GET",
-      });
-      const data = await res.json();
-      if (data.fromBRACU && data.currentLocationName) {
-        const res = await fetch(`api/riders/${data.fromBRACU}`, {
-          method: "GET",
-        });
-        const usersList = await res.json();
-        setRiders(usersList);
-        setSaved(true);
-      } else {
-        setSaved(true);
-        router.push("/location");
-      }
+  function handleFromBRACUChange(e: any) {
+    const selectedValue = e.target.value === "fromBRACU";
+    setFromBRACU(selectedValue);
+  }
+
+  function onStartSearching() {
+    setUserIsSearching(true);
+    if (location) {
+      (async () => {
+        if (session?.user?.email) {
+          const currentdate = moment().toDate();
+          const data = await getUserSession(session.user.email);
+          data.currentLocationName = location;
+          data.fromBRACU = fromBRACU;
+          data.requestedAt = currentdate;
+          await updateUser(data);
+        }
+      })();
     }
-  })();
+  }
+
+  function onEndSearch() {
+    setUserIsSearching(false);
+    setFromBRACU(false);
+    (async () => {
+      if (user) {
+        const data = user;
+        data.currentLocationName = null;
+        data.fromBRACU = null;
+        data.requestedAt = null;
+        await updateUser(data);
+      }
+    })();
+  }
 
   return (
-    <div className="grid md:grid-cols-2  md:gap-5 md:divide-x">
-      <div className="grid justify-center items-center px-5 lg:px-32 py-5 gap-20">
-        <p className="text-2xl md:text-4xl text-stone-100">
-          🔎 Searching for University friends 🐍
-        </p>
-        <Image
-          src="/map-search-svgrepo-com.svg"
-          alt="An SVG of an eye"
-          width={200}
-          height={200}
-          className="justify-self-center"
-        />
-        <Information
-          title="Please note"
-          description="Searching will be automatically stopped after 30 minutes in case you forget to click End Search"
-        />
-        <button
-          className="py-2 bg-blue-600 text-zinc-50"
-          onClick={() => {
-            onEndSearch();
-          }}
-        >
-          End Search
-        </button>
+    <div className="grid lg:grid-cols-3 lg:divide-x">
+      <div className="flex flex-col gap-5 justify-items-start px-5 py-5 xs:py-0">
+        {userIsSearching ? (
+          <Searching onEndSearch={onEndSearch} />
+        ) : (
+          <SearchInput
+            location={location ? location : ""}
+            handleFromBRACUChange={handleFromBRACUChange}
+            handleLocationChange={handleLocationChange}
+            onStartSearching={onStartSearching}
+            fromBRACU={fromBRACU}
+          />
+        )}
       </div>
 
-      <div className="gap-25 justify-center items-center px-5 py-5">
-        <table className="">
-          <tbody>
-            {riders?.map((rider) => {
-              return (
-                <tr key={rider.email}>
-                  <td className="text-xl text-slate-100 px-5">
-                    {rider.currentLocationName}
-                  </td>
-                  <td className="text-xl text-slate-100 px-5">{rider.name}</td>
-                  <td className="text-xl text-blue-300 px-5">
-                    <Link href={rider.whatsapp}>Whatsapp Call</Link>
-                  </td>
-                  <td className="text-xl text-blue-300 px-5">
-                    <Link href={rider.facebook}>Facebook / Messenger</Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="col-span-2 px-5 py-5">
+        {userIsSearching ? (
+          <RidersTable riders={riders} />
+        ) : (
+          <Warning
+            description="Click Start Searching to see available ride sharing partners"
+            showTitle={false}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,42 +1,46 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { SelectOptions } from "../../components/SelectOptions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Information from "../../components/Notes/Info";
 import Warning from "../../components/Notes/Warning";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { createUser, getUserSession, updateUser } from "../../session/session";
 
 export default function Profile() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [facebook, setFacebook] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [location, setLocation] = useState("");
   const [saved, setSaved] = useState(false);
   const router = useRouter();
 
-  if (!session) {
-    router.push("/");
-  }
-
-  (async () => {
-    if (session && saved === false) {
-      const res = await fetch(`api/profile/${session?.user?.email}`, {
-        method: "GET",
-      });
-      const data = await res.json();
-      if (data) {
-        setFacebook(data.facebook);
-        setWhatsapp(data.whatsapp);
-        setLocation(data.defaultLocationName);
-        setSaved(true);
-      }
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
     }
-  })();
+    if (status === "authenticated" && saved === false) {
+      (async () => {
+        if (session.user?.email) {
+          const data = await getUserSession(session.user?.email);
+          if (data) {
+            setFacebook(data.facebook ? data.facebook : "");
+            setWhatsapp(data.whatsapp ? data.whatsapp : "");
+            setLocation(
+              data.defaultLocationName ? data.defaultLocationName : ""
+            );
+            setSaved(true);
+          }
+        }
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   function handleSelectChange(event: any) {
     const selectedValue = event.target.value;
     setLocation(selectedValue);
-    console.log(selectedValue, location);
   }
 
   function onFormSubmit() {
@@ -56,11 +60,8 @@ export default function Profile() {
         defaultLocationName: location,
       };
       (async () => {
-        await fetch("api/profile/create", {
-          method: "POST",
-          body: JSON.stringify(profile),
-          headers: { "Content-Type": "application/json" },
-        });
+        await createUser(profile);
+        router.push("/search");
       })();
     } else if (
       session &&
@@ -69,34 +70,47 @@ export default function Profile() {
       session.user.name &&
       saved === true
     ) {
-      const profile = {
-        facebook: facebook,
-        whatsapp: whatsapp,
-        name: session.user.name,
-        image: session.user.image,
-        defaultLocationName: location,
-      };
       (async () => {
-        const res = await fetch(`api/profile/update/${session.user?.email}`, {
-          method: "POST",
-          body: JSON.stringify(profile),
-          headers: { "Content-Type": "application/json" },
-        }).then(async (res) => {
-          console.log(await res.json());
-        });
+        if (session.user?.email) {
+          const data = await getUserSession(session.user?.email);
+          if (data) {
+            data.facebook = facebook;
+            data.whatsapp = whatsapp;
+            data.defaultLocationName = location;
+          }
+          await updateUser(data);
+        }
+        router.push("/search");
       })();
     }
-    router.push("/location");
   }
+
+  const profileImage = (imageSrc: string | undefined | null) => {
+    if (imageSrc) {
+      return (
+        <div className="p-5 relative block rounded-lg">
+          <Image
+            src={imageSrc}
+            fill
+            alt="Call with WhatsApp"
+            className="rounded-lg"
+          />
+        </div>
+      );
+    } else {
+      ("😶‍🌫️ ");
+    }
+  };
 
   return (
     <>
       <div className="grid md:grid-cols-2  md:gap-5 md:divide-x">
-        <div className="grid justify-center items-center grid-rows-3 px-5 lg:px-32 py-5">
-          <p className="text-2xl md:text-4xl text-stone-100">
+        <div className="flex flex-col justify-center px-5 lg:px-15 py-5 gap-5">
+          <p className="flex flex-row text-2xl md:text-4xl text-stone-100 text-center gap-5">
+            {saved ? profileImage(session?.user?.image) : ""}
             {saved
-              ? "😶‍🌫️ " + session?.user?.name + "'s Profile"
-              : "😶‍🌫️ Let's Set up your Profile"}
+              ? session?.user?.name + "'s Profile"
+              : "Let's Set up your Profile"}
           </p>
           <p className="text-md md:text-xl text-stone-100 text-justify">
             Add your Default Location, Whatsapp Call Link (Recommended but
@@ -108,6 +122,7 @@ export default function Profile() {
             description="Setting up Facebook, Whatsapp Link can cause you to expose your Whatsapp
                         Call / Facebook Profile Link to public. However, you can always block
                         people from those apps."
+            showTitle={true}
           />
           <Information
             title="Don't you worry!"
@@ -117,7 +132,7 @@ export default function Profile() {
                         the link."
           />
         </div>
-        <div className="grid justify-center items-center grid-rows-3 px-5 py-5 gap-2">
+        <div className="flex flex-col px-5 py-5 gap-7 lg:px-16">
           <label className="block">
             <div className="text-stone-100 text-lg">
               Whatsapp Voice Call Link (Recommended)
@@ -162,12 +177,12 @@ export default function Profile() {
             />
           </label>
           <button
-            className="py-2 bg-blue-600 text-zinc-50"
+            className="py-2 bg-blue-600 text-zinc-50 rounded-lg"
             onClick={() => {
               onFormSubmit();
             }}
           >
-            Submit
+            Save
           </button>
         </div>
       </div>

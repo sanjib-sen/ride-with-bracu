@@ -1,5 +1,5 @@
 import "./globals.css";
-import AuthContext from "./AuthContext";
+import AuthContext from "../components/AuthContext";
 import Nav from "../components/NavBar";
 
 export default function RootLayout({
@@ -12,9 +12,9 @@ export default function RootLayout({
       <html lang="en">
         <head />
         <body>
-          <div className="grid h-screen bg-zinc-700">
+          <div className="grid h-screen overflow-y-auto no-scrollbar bg-zinc-700">
             <Nav />
-            <div className="items-center justify-center">{children}</div>
+            <div className="place-items-center">{children}</div>
           </div>
         </body>
       </html>

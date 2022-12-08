@@ -24,8 +24,6 @@ selectOptions.sort(function (a, b) {
 });
 
 export const SelectOptions = ({ onChangeFunction, defaultArea }: any) => {
-  console.log(defaultArea);
-
   return (
     <select
       value={defaultArea}
