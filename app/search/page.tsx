@@ -17,7 +17,7 @@ const refreshInterval = 5 * 1000; // Make it "0 * 100" to to turn it off
 const fetcher = (...args: [RequestInfo]) =>
   fetch(...args).then((res) => res.json());
 
-export function useRiders(url: string | null) {
+function useRiders(url: string | null) {
   const { data, error } = useSWR(url, fetcher, {
     refreshInterval: refreshInterval,
   });
@@ -28,7 +28,7 @@ export function useRiders(url: string | null) {
   };
 }
 
-export function useUser(url: string | null) {
+function useUser(url: string | null) {
   const { data, error } = useSWR(url, fetcher);
   return {
     user: data,
