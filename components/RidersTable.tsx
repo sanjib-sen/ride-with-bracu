@@ -48,6 +48,8 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                       <Link
                         href={rider.whatsapp}
                         className="p-3 relative block"
+                        rel="noopener noreferrer"
+                        target="_blank"
                       >
                         <Image
                           src="/logo/whatsapp.svg"
@@ -63,6 +65,8 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                         <Link
                           href={rider.facebook}
                           className="p-3 relative block"
+                          rel="noopener noreferrer"
+                          target="_blank"
                         >
                           <Image
                             src="/logo/facebook.svg"
@@ -73,6 +77,8 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                         <Link
                           href={convertFaceBookToMessengerLink(rider.facebook)}
                           className="p-3 relative block"
+                          rel="noopener noreferrer"
+                          target="_blank"
                         >
                           <Image
                             src="/logo/messenger.svg"
@@ -87,6 +93,8 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                     <Link
                       href={"mailto:" + rider.email}
                       className="p-3 relative block"
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       <Image
                         src="/logo/gmail.svg"

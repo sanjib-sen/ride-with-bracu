@@ -1,5 +1,5 @@
 import "./globals.css";
-import AuthContext from "./AuthContext";
+import AuthContext from "../components/AuthContext";
 import Nav from "../components/NavBar";
 
 export default function RootLayout({
