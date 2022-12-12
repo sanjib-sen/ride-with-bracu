@@ -2,6 +2,8 @@
 
 Ride with BRACU is a Ride Sharing app only for BRAC University Students which focuses on cost, convenience and safety. It is not a direct competitor of traditional ride sharing apps such as Uber, Lyft, Pathao, Obhai, etc. rather an extension to make the ride sharing process of those apps cheaper and safer.
 
+If you are a BRAC University student, you can use the live version from [ride-with-bracu.vercel.app](https://ride-with-bracu.vercel.app)
+
 ## Explaination
 Suppose you are a BRAC Univsersity Student and you live in Shyamoli, Dhaka. You are late for your University and you want to use a Ride Sharing app like Uber. But the cost is too much. So, you thought:
 
