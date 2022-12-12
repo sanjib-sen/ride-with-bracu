@@ -13,6 +13,17 @@ This app will help you to find every students of BRACU from Dhaka City who are a
 - \- Money
 
 ## Screenshots (Android)
+
+<p float="left" align="middle">
+  <img src="screenshots/login.jpg" width="100" height="220"/>
+  <img src="screenshots/profile.jpg" width="100" height="220" /> 
+  <img src="screenshots/searchInput.jpg" width="100" height="220" /> 
+  <img src="screenshots/search.jpg" width="100" height="220" /> 
+
+</p>
+
+
+
 ![Login](screenshots/login.jpg) ![profile](screenshots/profile.jpg) ![searchInput](screenshots/searchInput.jpg) ![search](screenshots/search.jpg)
 
 For Desktop Screenshots Please visit [Desktop Screenshots](/screenshots/desktop/README.md)
