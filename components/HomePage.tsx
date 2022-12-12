@@ -18,6 +18,8 @@ export default function HomePage() {
           const user = await getUserSession(session.user.email);
           if (user && user.defaultLocationName) {
             router.push("/search");
+          } else {
+            router.push("/profile");
           }
         }
       })();

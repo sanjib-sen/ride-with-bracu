@@ -1,37 +1,34 @@
 import { UserModel } from "@prisma/client";
 
-type profile = {
-  email: string;
-  facebook: string | null;
-  whatsapp: string | null;
-  defaultLocationName: string;
-  currentLocationNane: string | null;
-  fromBRACU: boolean | null;
-  requestedAt: Date | null;
-};
-
-export async function setUserSession(email: string) {
+export async function setUserSession(email: string): Promise<boolean> {
   const res = await fetch(`api/profile/${email}`, {
     method: "GET",
   });
-  await res.json().then((data) => {
+  const couldSet = await res.json().then((data) => {
     if (data) {
       delete data.id;
       sessionStorage.setItem("user", JSON.stringify(data));
+      return true;
+    } else {
+      return false;
     }
   });
+  return couldSet;
 }
 
-export async function getUserSession(email: string): Promise<UserModel> {
+export async function getUserSession(email: string): Promise<UserModel | null> {
   const possibleUser = sessionStorage.getItem("user");
   if (possibleUser) {
     const data = JSON.parse(possibleUser);
     delete data.id;
     return data;
   } else {
-    await setUserSession(email);
-    return await getUserSession(email);
+    const inDB = await setUserSession(email);
+    if (inDB === true) {
+      return await getUserSession(email);
+    }
   }
+  return null;
 }
 
 export async function updateUser(profile: Partial<UserModel>) {

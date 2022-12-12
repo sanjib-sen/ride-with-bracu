@@ -62,13 +62,11 @@ export default function Search() {
     (async () => {
       if (status === "authenticated" && session.user?.email) {
         const user = await getUserSession(session.user.email);
-
         if (user) {
           // In case of inactivity:
           if (!isRidersLoading && riders.length < 1) {
             setUserIsSearching(false);
           }
-
           setLocation(user.defaultLocationName);
           if (isSearching(user)) {
             setUserIsSearching(true);
@@ -99,10 +97,14 @@ export default function Search() {
         if (session?.user?.email) {
           const currentdate = moment().toDate();
           const data = await getUserSession(session.user.email);
-          data.currentLocationName = location;
-          data.fromBRACU = fromBRACU;
-          data.requestedAt = currentdate;
-          await updateUser(data);
+          if (data) {
+            data.currentLocationName = location;
+            data.fromBRACU = fromBRACU;
+            data.requestedAt = currentdate;
+            await updateUser(data);
+          } else {
+            router.push("/profile");
+          }
         }
       })();
     }
@@ -123,7 +125,7 @@ export default function Search() {
   }
 
   return (
-    <div className="grid md:grid-cols-3 md:divide-x">
+    <div className="grid md:grid-cols-3 md:divide-x gap-4 lg:mx-28 md:mx-14">
       <div className="flex flex-col gap-5 justify-items-start m-5 py-5 xs:py-0 xs:m-3">
         {userIsSearching ? (
           <Searching onEndSearch={onEndSearch} />
