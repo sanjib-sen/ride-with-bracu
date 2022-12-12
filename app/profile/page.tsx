@@ -57,7 +57,7 @@ export default function Profile() {
         name: session.user.name,
         email: session.user.email,
         image: session.user.image,
-        defaultLocationName: location,
+        defaultLocationName: location ? location : "Abdul Aziz Lane",
       };
       (async () => {
         await createUser(profile);
@@ -77,8 +77,8 @@ export default function Profile() {
             data.facebook = facebook;
             data.whatsapp = whatsapp;
             data.defaultLocationName = location;
+            await updateUser(data);
           }
-          await updateUser(data);
         }
         router.push("/search");
       })();

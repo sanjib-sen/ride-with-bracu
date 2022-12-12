@@ -54,6 +54,7 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                         src="/logo/whatsapp.svg"
                         fill
                         alt="Call with WhatsApp"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </Link>
                   ) : (
@@ -70,6 +71,7 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                         <Image
                           src="/logo/facebook.svg"
                           alt="Contact via Messenger"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           fill
                         />
                       </Link>
@@ -82,6 +84,7 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                         <Image
                           src="/logo/messenger.svg"
                           alt="Contact via Messenger"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           fill
                         />
                       </Link>
@@ -99,6 +102,7 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                       src="/logo/gmail.svg"
                       fill
                       alt="Send an Email to G-Suite"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </Link>
                 </td>
