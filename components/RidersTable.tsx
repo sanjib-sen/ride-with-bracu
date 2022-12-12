@@ -16,7 +16,7 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                   key={rider.email}
                   className="border grid grid-flow-row xs:grid-flow-col xs:grid-cols-4 justify-items-center items-center"
                 >
-                  <td className="flex flex-row items-center justify-center ml-3">
+                  <td className="flex flex-col xs:flex-row items-center justify-center ml-3 mt-3 xs:mt-0">
                     {rider.image ? (
                       <span className="p-4 relative flex">
                         <Image
@@ -30,11 +30,11 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                     ) : (
                       ""
                     )}
-                    <p className="text-lg md:text-xl text-slate-100 text-left pr-3 p-3">
+                    <p className="text-lg md:text-xl text-slate-100 text-center md:text-left pr-3 p-3">
                       {rider.name}
                     </p>
                   </td>
-                  <td className="text-lg md:text-xl text-slate-100 pr-3">
+                  <td className="text-lg md:text-xl text-slate-100 px-3 md:pr-3 md:px-0 text-center">
                     {rider.fromBRACU
                       ? "BRACU to " + rider.currentLocationName
                       : rider.currentLocationName + " to BRACU"}
@@ -43,7 +43,7 @@ export default function RidersTable({ riders }: { riders: UserModel[] }) {
                     <TimeAgo date={rider.requestedAt} />
                   </td>
 
-                  <td className="flex flex-row gap-4 pb-3 xs:pb-0">
+                  <td className="flex flex-row gap-4 p-3 md:p-0">
                     {rider.whatsapp ? (
                       <Link
                         href={rider.whatsapp}
