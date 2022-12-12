@@ -3,13 +3,13 @@
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
 import { removeUserSession } from "../session/session";
+import { usePathname } from "next/navigation";
 const Nav = () => {
-  const pathname = usePathname();
-  if (pathname != "/login") {
+  const pathName = usePathname();
+  if (pathName != "/login") {
     return (
-      <nav className="flex md:justify-between md:px-10 pt-5 px-5 justify-center ">
+      <nav className="flex md:justify-between md:px-10 pt-5 px-5 justify-center">
         <div className=" text-white mr-6 md:block hidden">
           <Link className="font-semibold text-4xl tracking-tight" href="/">
             🚌 Ride With BRACU
@@ -24,7 +24,8 @@ const Nav = () => {
           </Link>
           <button
             className="inline-block md:hidden text-white mr-4"
-            onClick={() => {
+            onClick={async () => {
+              await removeUserSession();
               signOut({ callbackUrl: "/login" });
             }}
           >

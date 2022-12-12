@@ -153,7 +153,7 @@ export default function Profile() {
               onChange={(e) => {
                 setWhatsapp(e.target.value);
               }}
-              className="form-input mt-3 w-full bg-zinc-700 text-stone-100 rounded-xl"
+              className="form-input mt-3 w-full bg-inherit text-stone-100 rounded-xl"
               placeholder="https://call.whatsapp.com/voice/xxxxxxx"
               value={whatsapp}
             />
@@ -167,7 +167,7 @@ export default function Profile() {
               onChange={(e) => {
                 setFacebook(e.target.value);
               }}
-              className="form-input mt-3 w-full bg-zinc-700 text-stone-100 rounded-xl"
+              className="form-input mt-3 w-full bg-inherit text-stone-100 rounded-xl"
               placeholder="https://www.facebook.com/xxxxxxxx/"
               value={facebook}
             />

@@ -12,10 +12,10 @@ export default function RootLayout({
       <html lang="en">
         <head />
         <body>
-          <div className="grid h-screen overflow-y-auto no-scrollbar bg-zinc-700">
+          <main className="grid h-screen overflow-y-auto no-scrollbar bg-gradient-to-r from-blue-900 to-black">
             <Nav />
             <div className="place-items-center">{children}</div>
-          </div>
+          </main>
         </body>
       </html>
     </AuthContext>
