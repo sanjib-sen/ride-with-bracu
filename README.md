@@ -5,6 +5,7 @@
 ```bash
 npm install
 npx prisma migrate dev
+npx prisma db push
 npm run dev
 ```
 

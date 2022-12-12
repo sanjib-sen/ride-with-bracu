@@ -24,11 +24,19 @@ export default function SearchInput({
         <label className="block">
           <span className="text-stone-100"> You are ...</span>
           <select
-            className="form-select mt-3 block w-full bg-zinc-700 text-stone-100 rounded-xl"
+            className="form-select mt-3 block w-full bg-inherit text-stone-100 rounded-xl"
             onChange={handleFromBRACUChange}
           >
-            <option value="toBRACU" label="Going to BRACU from a place" />
-            <option value="fromBRACU" label="Going from BRACU to a place" />
+            <option
+              value="toBRACU"
+              label="Going to BRACU from a place"
+              className="bg-blue-900"
+            />
+            <option
+              value="fromBRACU"
+              label="Going from BRACU to a place"
+              className="bg-blue-900"
+            />
           </select>
         </label>
         <label className="block">

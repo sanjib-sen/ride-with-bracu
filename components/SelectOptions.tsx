@@ -27,15 +27,16 @@ export const SelectOptions = ({ onChangeFunction, defaultArea }: any) => {
   return (
     <select
       value={defaultArea}
-      className="form-select mt-3 block w-full bg-zinc-700 text-stone-100 rounded-xl"
+      className="form-select mt-3 w-full text-stone-100 rounded-xl bg-inherit"
       onChange={onChangeFunction}
     >
-      {selectOptions.map((option) => {
+      {selectOptions.map((optionProps) => {
         return (
           <option
-            value={option.label}
-            label={option.label}
-            key={option.value}
+            value={optionProps.label}
+            label={optionProps.label}
+            key={optionProps.value}
+            className="bg-blue-900"
           />
         );
       })}

@@ -123,8 +123,8 @@ export default function Search() {
   }
 
   return (
-    <div className="grid lg:grid-cols-3 lg:divide-x">
-      <div className="flex flex-col gap-5 justify-items-start px-5 py-5 xs:py-0">
+    <div className="grid md:grid-cols-3 md:divide-x">
+      <div className="flex flex-col gap-5 justify-items-start m-5 py-5 xs:py-0 xs:m-3">
         {userIsSearching ? (
           <Searching onEndSearch={onEndSearch} />
         ) : (
@@ -138,7 +138,7 @@ export default function Search() {
         )}
       </div>
 
-      <div className="col-span-2 px-5 py-5">
+      <div className="md:col-span-2 px-5 py-5">
         {userIsSearching ? (
           <RidersTable riders={riders} />
         ) : (

@@ -88,14 +88,15 @@ export default function Profile() {
   const profileImage = (imageSrc: string | undefined | null) => {
     if (imageSrc) {
       return (
-        <div className="p-5 relative block rounded-lg">
+        <span className="p-5 relative flex m-3">
           <Image
             src={imageSrc}
             fill
-            alt="Call with WhatsApp"
-            className="rounded-lg"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            alt="Profile Photo"
+            className="rounded-full"
           />
-        </div>
+        </span>
       );
     } else {
       ("😶‍🌫️ ");
@@ -104,14 +105,16 @@ export default function Profile() {
 
   return (
     <>
-      <div className="grid md:grid-cols-2  md:gap-5 md:divide-x">
+      <div className="grid md:grid-cols-2  md:gap-5 md:divide-x md:px-30">
         <div className="flex flex-col justify-center px-5 lg:px-15 py-5 gap-5">
-          <p className="flex flex-row text-2xl md:text-4xl text-stone-100 text-center gap-5">
+          <div className="flex flex-col md:flex-row text-2xl md:text-4xl items-center justify-center text-stone-100 text-center">
             {saved ? profileImage(session?.user?.image) : ""}
-            {saved
-              ? session?.user?.name + "'s Profile"
-              : "Let's Set up your Profile"}
-          </p>
+            {saved ? (
+              session?.user?.name + "'s Profile"
+            ) : (
+              <p className="">Let{"'"}s Set up your Profile</p>
+            )}
+          </div>
           <p className="text-md md:text-xl text-stone-100 text-justify">
             Add your Default Location, Whatsapp Call Link (Recommended but
             Optional), Facebook Profile Link (Optional) so that people can reach
@@ -150,7 +153,7 @@ export default function Profile() {
               onChange={(e) => {
                 setWhatsapp(e.target.value);
               }}
-              className="form-input mt-3 w-full bg-zinc-700 text-stone-100 rounded-xl"
+              className="form-input mt-3 w-full bg-inherit text-stone-100 rounded-xl"
               placeholder="https://call.whatsapp.com/voice/xxxxxxx"
               value={whatsapp}
             />
@@ -164,7 +167,7 @@ export default function Profile() {
               onChange={(e) => {
                 setFacebook(e.target.value);
               }}
-              className="form-input mt-3 block w-full bg-zinc-700 text-stone-100 rounded-xl"
+              className="form-input mt-3 w-full bg-inherit text-stone-100 rounded-xl"
               placeholder="https://www.facebook.com/xxxxxxxx/"
               value={facebook}
             />
