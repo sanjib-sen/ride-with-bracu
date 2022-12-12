@@ -105,7 +105,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className="grid md:grid-cols-2  md:gap-5 md:divide-x md:px-30">
+      <div className="grid md:grid-cols-2  md:gap-5 md:divide-x  lg:mx-72">
         <div className="flex flex-col justify-center px-5 lg:px-15 py-5 gap-5">
           <div className="flex flex-col md:flex-row text-2xl md:text-4xl items-center justify-center text-stone-100 text-center">
             {saved ? profileImage(session?.user?.image) : ""}
@@ -119,6 +119,9 @@ export default function Profile() {
             Add your Default Location, Whatsapp Call Link (Recommended but
             Optional), Facebook Profile Link (Optional) so that people can reach
             out to you.
+            <br />
+            <br />
+            By Default, your G-Suite Email Address will automatically be shared.
           </p>
           <Warning
             title="Exposing Links"
