@@ -30,12 +30,12 @@ export default function SearchInput({
             <option
               value="toBRACU"
               label="Going to BRACU from a place"
-              className="bg-blue-900"
+              className="bg-black"
             />
             <option
               value="fromBRACU"
               label="Going from BRACU to a place"
-              className="bg-blue-900"
+              className="bg-black"
             />
           </select>
         </label>

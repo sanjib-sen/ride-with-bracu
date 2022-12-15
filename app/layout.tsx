@@ -12,7 +12,7 @@ export default function RootLayout({
       <html lang="en">
         <head />
         <body>
-          <main className="grid h-screen overflow-y-auto no-scrollbar bg-gradient-to-r from-blue-900 to-black">
+          <main className="grid h-screen overflow-y-auto no-scrollbar bg-black">
             <Nav />
             <div className="place-items-center">{children}</div>
           </main>

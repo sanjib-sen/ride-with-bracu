@@ -36,7 +36,7 @@ export const SelectOptions = ({ onChangeFunction, defaultArea }: any) => {
             value={optionProps.label}
             label={optionProps.label}
             key={optionProps.value}
-            className="bg-blue-900"
+            className="bg-black"
           />
         );
       })}
