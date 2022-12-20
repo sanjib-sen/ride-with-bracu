@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import React from "react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { removeUserSession } from "../session/session";
 import { usePathname } from "next/navigation";
 const Nav = () => {
+  const { status } = useSession();
   const pathName = usePathname();
-  if (pathName == "/login") {
+  if (pathName == "/login" || status != "authenticated") {
     return <div />;
   } else {
     return (
