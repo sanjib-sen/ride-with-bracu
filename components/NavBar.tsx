@@ -7,7 +7,9 @@ import { removeUserSession } from "../session/session";
 import { usePathname } from "next/navigation";
 const Nav = () => {
   const pathName = usePathname();
-  if (pathName != "/login") {
+  if (pathName == "/login") {
+    return <div />;
+  } else {
     return (
       <nav className="flex md:justify-between md:px-10 pt-5 px-5 justify-center">
         <div className=" text-white mr-6 md:block hidden">
@@ -43,8 +45,6 @@ const Nav = () => {
         </div>
       </nav>
     );
-  } else {
-    return <div></div>;
   }
 };
 export default Nav;
