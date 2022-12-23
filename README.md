@@ -1,10 +1,23 @@
 # Ride with BRACU
 
+- [Ride with BRACU](#ride-with-bracu)
+  - [Explaination](#explaination)
+  - [Screenshots (Android)](#screenshots-android)
+  - [Features](#features)
+  - [How to Build](#how-to-build)
+  - [Unit Tests](#unit-tests)
+  - [Deployment](#deployment)
+  - [Tech Stacks](#tech-stacks)
+  - [Notable Achievement](#notable-achievement)
+  - [Future Roadmap](#future-roadmap)
+  - [Contact](#contact)
+
 Ride with BRACU is a Ride Sharing app only for BRAC University Students which focuses on cost, convenience and safety. It is not a direct competitor of traditional ride sharing apps such as Uber, Lyft, Pathao, Obhai, etc. rather an extension to make the ride sharing process of those apps cheaper and safer.
 
 If you are a BRAC University student, you can use the live version from [ride-with-bracu.vercel.app](https://ride-with-bracu.vercel.app)
 
 ## Explaination
+
 Suppose you are a BRAC Univsersity Student and you live in Shyamoli, Dhaka. You are late for your University and you want to use a Ride Sharing app like Uber. But the cost is too much. So, you thought:
 
 > I wish I knew someone from Shyamoli so that I could share my Uber Ride with him/her.
@@ -18,14 +31,15 @@ This app will help you to find every students of BRACU from Dhaka City who are a
 
 <p float="left" align="middle">
   <img src="screenshots/login.jpg" width="100" height="220"/>
-  <img src="screenshots/profile.jpg" width="100" height="220" /> 
-  <img src="screenshots/searchInput.jpg" width="100" height="220" /> 
-  <img src="screenshots/search.jpg" width="100" height="220" /> 
+  <img src="screenshots/profile.jpg" width="100" height="220" />
+  <img src="screenshots/searchInput.jpg" width="100" height="220" />
+  <img src="screenshots/search.jpg" width="100" height="220" />
 </p>
 
 For Desktop Screenshots Please visit [Desktop Screenshots](/screenshots/desktop/README.md)
 
-## Features:
+## Features
+
 - Strict Sign in with BRACU G-Suite Email
 - Ability to save Whatsapp Voice Call Link, Facebook Link, Messenger Link for better communication
 - Ability to save default location for faster user experience
@@ -35,22 +49,46 @@ For Desktop Screenshots Please visit [Desktop Screenshots](/screenshots/desktop/
 - Searching state will automatically be turned off in case of 30 minutes of inactivity
 - Can be easily converted to React Native / Expo and use as a native Android / iOS app
 - Unit Tests
-## How to Build 
+
+## How to Build
 
 - Copy `.env.example` as `.env`
 - In the `.env` file enter your [Google Cloud credentials](https://console.cloud.google.com/apis/credentials)
 - In the `prisma/schema.prisma` comment line no 10, 11 and uncomment line no 14, 15 (Hint is given in the file).
 - Run the following commands
+
     ```bash
     npm install &&
     npx prisma migrate dev &&
     npx prisma db push &&
     npm run dev
     ```
+
 Then open [http://localhost:3000](http://localhost:3000) with a browser to see the result.
 
+## Unit Tests
+
+We are using [playwright](https://playwright.dev) for unit testing as per [NextJS's suggestion](https://nextjs.org/docs/testing#playwright)
+
+Run
+
+```bash
+npx playwright install && npm run test:e2e
+```
+
+## Deployment
+
+[Vercel](http://vercel.com/) is recommended for deployment.
+
+Before deploying to Vercel, Run
+
+```bash
+npm run vercel-build
+```
+
 ## Tech Stacks
-- [NextJS](https://nextjs.org/) (Version 13.0.6 with [app directory](https://beta.nextjs.org/docs/routing/fundamentals#the-app-directory) enabled)
+
+- [NextJS](https://nextjs.org/) (Version 13.1 with [app directory](https://beta.nextjs.org/docs/routing/fundamentals#the-app-directory) enabled)
 - [TailwindCSS](https://tailwindcss.com/) for Custom CSS Styling
 - [SWR](https://swr.vercel.app/) for fetching
 - [Prisma](https://www.prisma.io/) for DB Migration
@@ -63,11 +101,13 @@ Then open [http://localhost:3000](http://localhost:3000) with a browser to see t
 - [Eslint](https://eslint.org/) for linting
 - [Prettier](https://prettier.io/) as a code formatter
 - [Playwright](https://playwright.dev/) for end-to-end unit tests
+
 ## Notable Achievement
 
 Before sending the data to the DB, I have used sessionStorage as a middleware for fecthing and sending data (cache). This reduces the need of using frequent DB queries as well as improved the performance by 10x.
 
 ## Future Roadmap
+
 - Google Map integration for showing location and roads
 - GPS integration for grabbing current location
 - Convert to React Native after final build
@@ -75,4 +115,5 @@ Before sending the data to the DB, I have used sessionStorage as a middleware fo
 - You tell me
 
 ## Contact
+
 Please mail to [sksenonline@gmail.com](mailto:sksenonline@gmail.com)
